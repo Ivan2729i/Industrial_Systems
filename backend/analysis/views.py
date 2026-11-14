@@ -11,6 +11,8 @@ from .temporal import (
     load_temporal_data,
     calculate_temporal_summary,
 )
+from .audit import audit_consistency
+from .temporal import load_temporal_data
 
 
 from .services import load_cells
@@ -236,3 +238,51 @@ def temporal_view(request):
         "cells": records,
     })
 
+
+@api_view(["GET"])
+def audit_view(request):
+    requested_date = request.query_params.get("date")
+
+    if not requested_date:
+        return Response(
+            {"error": "Debes proporcionar una fecha."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        parsed_date = Date.fromisoformat(requested_date)
+
+        if parsed_date.isoformat() != requested_date:
+            raise ValueError
+
+    except ValueError:
+        return Response(
+            {"error": "Fecha invalida. Usa YYYY-MM-DD."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        spatial_cells = load_cells(requested_date)
+        temporal_cells = load_temporal_data(requested_date)
+
+        report = audit_consistency(
+            spatial_cells,
+            temporal_cells,
+        )
+
+    except FileNotFoundError:
+        return Response(
+            {"error": "Faltan archivos para la auditoria."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    except (ValueError, TypeError, KeyError):
+        return Response(
+            {"error": "No se pudieron auditar los datos."},
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
+
+    return Response({
+        "date": requested_date,
+        **report,
+    })

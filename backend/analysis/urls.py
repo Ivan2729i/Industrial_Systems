@@ -7,8 +7,8 @@ from .views import (
     geojson_view,
     available_dates_view,
     coverage_view,
-    temporal_view
-
+    temporal_view,
+    audit_view
 )
 
 urlpatterns = [
@@ -37,5 +37,10 @@ urlpatterns = [
         "temporal/",
         temporal_view,
         name="temporal",
+    ),
+    path(
+        "audit/",
+        audit_view,
+        name="audit",
     ),
 ]

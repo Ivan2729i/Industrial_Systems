@@ -355,3 +355,144 @@ class TemporalAPITests(SimpleTestCase):
             {"date": "incorrecta"},
         )
         self.assertEqual(response.status_code, 400)
+
+
+from .audit import audit_consistency
+
+
+class AuditTests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_consistent_cells(self):
+        cell_id = h3.latlng_to_cell(
+            19.5, -101.2, 7
+        )
+
+        spatial = [
+            {"celda_h3": cell_id}
+        ]
+
+        temporal = [
+            {
+                "celda_h3": cell_id,
+                "modis_utc": "2024-04-19 08:30:00.000 UTC",
+                "viirs_utc": "2024-04-19 08:37:42.900 UTC",
+                "diferencia_min": 7.715,
+            }
+        ]
+
+        report = audit_consistency(
+            spatial,
+            temporal
+        )
+
+        self.assertEqual(
+            report["shared_cells"], 1
+        )
+
+        self.assertEqual(
+            report["issues_count"], 0,
+            report["issues"]
+        )
+
+        self.assertEqual(
+            report["structural_status"],
+            "passed"
+        )
+
+    def test_invalid_temporal_difference(self):
+        cell_id = h3.latlng_to_cell(19.5, -101.2, 7)
+
+        report = audit_consistency(
+            [{"celda_h3": cell_id}],
+            [{
+                "celda_h3": cell_id,
+                "diferencia_min": -5,
+            }],
+        )
+
+        self.assertEqual(
+            report["structural_status"], "failed"
+        )
+
+    @patch("analysis.views.load_cells")
+    @patch("analysis.views.load_temporal_data")
+    def test_audit_endpoint(
+        self,
+        mock_temporal,
+        mock_spatial,
+    ):
+        mock_spatial.return_value = []
+        mock_temporal.return_value = []
+
+        response = self.client.get(
+            "/api/audit/",
+            {"date": "2024-04-19"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["structural_status"],
+            "passed",
+        )
+        self.assertEqual(
+            response.data["scientific_validation"],
+            "pending",
+        )
+
+        def test_detect_time_difference_mismatch(self):
+            cell_id = h3.latlng_to_cell(
+                19.5, -101.2, 7
+            )
+
+            spatial = [
+                {"celda_h3": cell_id}
+            ]
+
+            temporal = [
+                {
+                    "celda_h3": cell_id,
+                    "modis_utc": "2024-04-19 08:30:00.000 UTC",
+                    "viirs_utc": "2024-04-19 08:40:00.000 UTC",
+                    "diferencia_min": 5.0,
+                }
+            ]
+
+            report = audit_consistency(spatial, temporal)
+
+            issue_types = [
+                issue["type"]
+                for issue in report["issues"]
+            ]
+
+            self.assertIn(
+                "time_difference_mismatch",
+                issue_types
+            )
+
+    def test_detect_time_difference_mismatch(self):
+        cell_id = h3.latlng_to_cell(
+            19.5, -101.2, 7
+        )
+
+        report = audit_consistency(
+            [{"celda_h3": cell_id}],
+            [{
+                "celda_h3": cell_id,
+                "modis_utc": "2024-04-19 08:30:00.000 UTC",
+                "viirs_utc": "2024-04-19 08:40:00.000 UTC",
+                "diferencia_min": 5.0,
+            }]
+        )
+
+        issue_types = [
+            issue["type"]
+            for issue in report["issues"]
+        ]
+
+        self.assertIn(
+            "time_difference_mismatch",
+            issue_types
+        )
