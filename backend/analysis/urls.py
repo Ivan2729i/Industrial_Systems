@@ -8,7 +8,8 @@ from .views import (
     available_dates_view,
     coverage_view,
     temporal_view,
-    audit_view
+    audit_view,
+    comparison_view
 )
 
 urlpatterns = [
@@ -42,5 +43,10 @@ urlpatterns = [
         "audit/",
         audit_view,
         name="audit",
+    ),
+    path(
+        "comparison/",
+        comparison_view,
+        name="comparison",
     ),
 ]

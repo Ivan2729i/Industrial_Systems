@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from .comparison import build_comparison
 from datetime import date as Date
 from .services import get_available_dates
 from rest_framework.decorators import api_view
@@ -285,4 +285,52 @@ def audit_view(request):
     return Response({
         "date": requested_date,
         **report,
+    })
+
+@api_view(["GET"])
+def comparison_view(request):
+    requested_date = request.query_params.get("date")
+
+    if not requested_date:
+        return Response(
+            {"error": "Debes proporcionar una fecha."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        parsed = Date.fromisoformat(requested_date)
+
+        if parsed.isoformat() != requested_date:
+            raise ValueError
+
+    except ValueError:
+        return Response(
+            {"error": "Fecha inválida. Usa YYYY-MM-DD."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        spatial_cells = load_cells(requested_date)
+        temporal_cells = load_temporal_data(requested_date)
+
+        result = build_comparison(
+            spatial_cells,
+            temporal_cells,
+        )
+
+    except FileNotFoundError:
+        return Response(
+            {"error": "Faltan resultados para esta fecha."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    except (ValueError, TypeError, KeyError):
+        return Response(
+            {"error": "Los resultados no se pueden integrar."},
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
+
+    return Response({
+        "date": requested_date,
+        **result,
     })

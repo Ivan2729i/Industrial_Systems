@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from unittest.mock import patch
-
+from .comparison import build_comparison
 from django.test import SimpleTestCase
 from rest_framework.test import APIClient
 import h3
@@ -496,3 +496,111 @@ class AuditTests(SimpleTestCase):
             "time_difference_mismatch",
             issue_types
         )
+
+class ComparisonTests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.cell_id = h3.latlng_to_cell(
+            19.5, -101.2, 7
+        )
+
+    def test_comparison_with_temporal_data(self):
+        spatial = [{
+            "celda_h3": self.cell_id,
+            "modis_pixeles": 5,
+            "viirs_pixeles": 10,
+            "modis_fuego": 0,
+            "viirs_fuego": 0,
+            "observacion_util_ambos": True,
+        }]
+
+        temporal = [{
+            "celda_h3": self.cell_id,
+            "diferencia_min": 7.715,
+            "modis_utc": "2024-04-19 08:30:00.000 UTC",
+            "viirs_utc": "2024-04-19 08:37:42.900 UTC",
+        }]
+
+        result = build_comparison(spatial, temporal)
+        cell = result["cells"][0]
+
+        self.assertTrue(cell["has_temporal_data"])
+        self.assertEqual(
+            cell["temporal_difference_min"], 7.715
+        )
+        self.assertIsNone(cell["comparable"])
+
+    def test_comparison_without_temporal_data(self):
+        spatial = [{
+            "celda_h3": self.cell_id,
+            "modis_pixeles": 0,
+            "viirs_pixeles": 8,
+            "modis_fuego": 0,
+            "viirs_fuego": 0,
+            "observacion_util_ambos": False,
+        }]
+
+        result = build_comparison(spatial, [])
+        cell = result["cells"][0]
+
+        self.assertFalse(cell["has_temporal_data"])
+        self.assertIsNone(
+            cell["temporal_difference_min"]
+        )
+        self.assertEqual(
+            cell["temporal_validation"],
+            "not_available"
+        )
+        self.assertIsNone(cell["comparable"])
+
+    def test_duplicate_spatial_cell(self):
+        spatial = [{
+            "celda_h3": self.cell_id,
+            "modis_pixeles": 5,
+            "viirs_pixeles": 10,
+            "modis_fuego": 0,
+            "viirs_fuego": 0,
+            "observacion_util_ambos": True,
+        }]
+
+        with self.assertRaises(ValueError):
+            build_comparison(spatial * 2, [])
+
+    @patch("analysis.views.load_cells")
+    @patch("analysis.views.load_temporal_data")
+    def test_comparison_endpoint(
+        self,
+        mock_temporal,
+        mock_spatial,
+    ):
+        mock_spatial.return_value = []
+        mock_temporal.return_value = []
+
+        response = self.client.get(
+            "/api/comparison/",
+            {"date": "2024-04-19"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["scientific_validation"],
+            "pending"
+        )
+        self.assertEqual(
+            response.data["summary"]["total_cells"],
+            0
+        )
+
+    def test_comparison_requires_date(self):
+        response = self.client.get(
+            "/api/comparison/"
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_comparison_invalid_date(self):
+        response = self.client.get(
+            "/api/comparison/",
+            {"date": "incorrecta"},
+        )
+        self.assertEqual(response.status_code, 400)
