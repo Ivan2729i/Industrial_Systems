@@ -305,3 +305,53 @@ class CoverageTests(SimpleTestCase):
             {"date": "incorrecta"},
         )
         self.assertEqual(response.status_code, 400)
+
+
+from .temporal import calculate_temporal_summary
+
+
+class TemporalAPITests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_temporal_summary(self):
+        records = [
+            {"diferencia_min": 7.686},
+            {"diferencia_min": 7.715},
+            {"diferencia_min": 7.750},
+        ]
+
+        result = calculate_temporal_summary(records)
+
+        self.assertEqual(result["total_cells"], 3)
+        self.assertEqual(
+            result["median_difference_min"], 7.715
+        )
+
+    @patch("analysis.views.load_temporal_data")
+    def test_temporal_endpoint(self, mock_load):
+        mock_load.return_value = [
+            {"diferencia_min": 7.715}
+        ]
+
+        response = self.client.get(
+            "/api/temporal/",
+            {"date": "2024-04-19"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["summary"]["total_cells"], 1
+        )
+
+    def test_temporal_requires_date(self):
+        response = self.client.get("/api/temporal/")
+        self.assertEqual(response.status_code, 400)
+
+    def test_temporal_invalid_date(self):
+        response = self.client.get(
+            "/api/temporal/",
+            {"date": "incorrecta"},
+        )
+        self.assertEqual(response.status_code, 400)

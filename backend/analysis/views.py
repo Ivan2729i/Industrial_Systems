@@ -7,6 +7,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .geojson import cells_to_geojson
 from .coverage import calculate_coverage
+from .temporal import (
+    load_temporal_data,
+    calculate_temporal_summary,
+)
+
 
 from .services import load_cells
 from .services import load_cells, calculate_statistics
@@ -184,3 +189,50 @@ def coverage_view(request):
         "date": requested_date,
         **result,
     })
+
+
+@api_view(["GET"])
+def temporal_view(request):
+    requested_date = request.query_params.get("date")
+
+    if not requested_date:
+        return Response(
+            {"error": "Debes proporcionar una fecha."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        parsed = Date.fromisoformat(requested_date)
+
+        if parsed.isoformat() != requested_date:
+            raise ValueError
+
+    except ValueError:
+        return Response(
+            {"error": "Fecha inválida. Usa YYYY-MM-DD."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        records = load_temporal_data(requested_date)
+        summary = calculate_temporal_summary(records)
+
+    except FileNotFoundError:
+        return Response(
+            {"error": "No hay análisis temporal para esa fecha."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    except (ValueError, TypeError, KeyError) as exc:
+        return Response(
+            {"error": str(exc)},
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
+
+    return Response({
+        "date": requested_date,
+        "status": "measured_not_validated",
+        "summary": summary,
+        "cells": records,
+    })
+
