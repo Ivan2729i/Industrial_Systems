@@ -1,0 +1,5 @@
+﻿identificador,fecha,modis_sobrevuelo,viirs_sobrevuelo,diferencia_min,estado,celdas_total,celdas_utiles_ambos,celdas_fuego_ambos,deteccion_solo_modis,deteccion_solo_viirs,discrepancias_candidatas_viirs,celdas_umbral_80,viirs_reflejo_solar_pct,archivo_resultado,detalle
+2024-04-06_0925_0918,2024-04-06,A2024097.0925,A2024097.0918,7.0,procesado,193,182,0,0,2,2,114,0.0,celdas_2024-04-06_0925_0918.csv,
+2024-04-06_2020_2030,2024-04-06,A2024097.2020,A2024097.2030,10.0,procesado,195,185,2,0,0,0,116,0.0,celdas_2024-04-06_2020_2030.csv,
+2024-04-08_0910_0842,2024-04-08,A2024099.0910,A2024099.0842,28.0,faltan_archivos,0,0,0,0,0,0,0,0.0,,MYD14.A2024099.0910.061.2024099153941.hdf; MYD03.A2024099.0910.061.2024099164019.hdf; VNP14IMG.A2024099.0842.002.2024099172935.nc; VNP03IMG.A2024099.0842.002.2024099165253.nc
+2024-04-08_2000_1954,2024-04-08,A2024099.2000,A2024099.1954,6.0,procesado,197,3,0,0,2,2,0,99.66,celdas_2024-04-08_2000_1954.csv,

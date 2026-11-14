@@ -1,0 +1,96 @@
+
+# ==========================================
+# FIRESIGHT - Python / Django / NASA
+# ==========================================
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.python-version
+.venv/
+venv/
+env/
+ENV/
+
+# Python builds
+build/
+dist/
+.eggs/
+
+# Django
+*.sqlite3
+*.sqlite3-journal
+media/
+staticfiles/
+local_settings.py
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Pruebas y cobertura
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Logs y archivos temporales
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+~$*
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+
+# ==========================================
+# MODIS / VIIRS - Datos satelitales pesados
+# ==========================================
+
+# Productos NASA de nivel 2
+*.hdf
+*.h5
+*.hdf5
+*.nc
+*.nc4
+
+# Lotes locales de procesamiento
+src/datos/level2/
+src/datos/lotes/
+
+# ==========================================
+# Modelos y archivos binarios generados
+# ==========================================
+
+*.joblib
+*.pkl
+*.pickle
+
+
