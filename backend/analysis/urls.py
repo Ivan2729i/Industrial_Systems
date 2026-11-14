@@ -1,5 +1,11 @@
+
 from django.urls import path
-from .views import cells_list, statistics_view
+
+from .views import (
+    cells_list,
+    statistics_view,
+    geojson_view,
+)
 
 urlpatterns = [
     path("cells/", cells_list, name="cells-list"),
@@ -7,5 +13,10 @@ urlpatterns = [
         "statistics/",
         statistics_view,
         name="statistics",
+    ),
+    path(
+        "geojson/",
+        geojson_view,
+        name="geojson",
     ),
 ]
