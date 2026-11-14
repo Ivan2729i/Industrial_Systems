@@ -19,7 +19,9 @@ from .pilot_comparisons import (
     summarize_pilot,
     STATUSES,
 )
+from datetime import date as Date
 
+from .firms_detections import read_detections
 
 from .services import load_cells
 from .services import load_cells, calculate_statistics
@@ -424,5 +426,100 @@ def pilot_comparisons_view(request):
             "has_more": offset + limit < len(filtered),
         },
         "data": filtered[offset:offset + limit],
+    })
+
+
+@api_view(["GET"])
+def firms_detections_view(request):
+    sensor = request.query_params.get("sensor")
+    satellite = request.query_params.get("satellite")
+    requested_date = request.query_params.get("date")
+
+    if sensor:
+        sensor = sensor.upper()
+
+    if sensor and sensor not in {"MODIS", "VIIRS"}:
+        return Response(
+            {"error": "Sensor invalido. Usa MODIS o VIIRS."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if requested_date:
+        try:
+            parsed = Date.fromisoformat(requested_date)
+
+            if parsed.isoformat() != requested_date:
+                raise ValueError
+
+        except ValueError:
+            return Response(
+                {"error": "Fecha invalida. Usa YYYY-MM-DD."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    try:
+        limit = int(
+            request.query_params.get("limit", 100)
+        )
+        offset = int(
+            request.query_params.get("offset", 0)
+        )
+    except ValueError:
+        return Response(
+            {"error": "Paginacion invalida."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if not 1 <= limit <= 500 or offset < 0:
+        return Response(
+            {"error": "Limit u offset fuera de rango."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        records = read_detections(
+            sensor=sensor,
+            requested_date=requested_date,
+            satellite=satellite,
+        )
+
+    except FileNotFoundError:
+        return Response(
+            {"error": "No se encontro el CSV de origen."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    except (ValueError, TypeError):
+        return Response(
+            {"error": "Los datos de origen son invalidos."},
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
+
+    return Response({
+        "source": "FIRMS-format CSV (provenance pending)",
+        "scientific_validation": "not_evaluated",
+        "region": "Michoacan_pilot",
+        "filters": {
+            "date": requested_date,
+            "sensor": sensor,
+            "satellite": satellite,
+        },
+        "summary": {
+            "total_detections": len(records),
+            "by_sensor": {
+                name: sum(
+                    row["sensor"] == name
+                    for row in records
+                )
+                for name in ("MODIS", "VIIRS")
+            },
+        },
+        "pagination": {
+            "limit": limit,
+            "offset": offset,
+            "total": len(records),
+            "has_more": offset + limit < len(records),
+        },
+        "data": records[offset:offset + limit],
     })
 

@@ -10,7 +10,8 @@ from .views import (
     temporal_view,
     audit_view,
     comparison_view,
-    pilot_comparisons_view
+    pilot_comparisons_view,
+    firms_detections_view
 )
 
 urlpatterns = [
@@ -54,5 +55,10 @@ urlpatterns = [
         "pilot-comparisons/",
         pilot_comparisons_view,
         name="pilot-comparisons",
+    ),
+    path(
+        "firms-detections/",
+        firms_detections_view,
+        name="firms-detections",
     ),
 ]

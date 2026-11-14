@@ -13,6 +13,11 @@ from .pilot_comparisons import (
 from .geojson import cell_to_feature
 from .services import load_cells
 from .validators import validate_cell, validate_cells
+from unittest.mock import patch
+
+from django.test import SimpleTestCase
+from rest_framework.test import APIClient
+
 
 
 class CellsAPITests(SimpleTestCase):
@@ -733,4 +738,87 @@ class PilotRealDataTests(SimpleTestCase):
                 row["metodologia_validada"] is False
                 for row in records
             )
+        )
+class FirmsDetectionsTests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+
+    @patch("analysis.views.read_detections")
+    def test_endpoint_success(self, mock_read):
+        mock_read.return_value = [
+            {
+                "id": "VIIRS-test-1",
+                "sensor": "VIIRS",
+                "latitude": 19.45,
+                "longitude": -101.95,
+                "satellite": "SNPP",
+            }
+        ]
+
+        response = self.client.get(
+            "/api/firms-detections/"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["summary"]["total_detections"],
+            1,
+        )
+
+    def test_invalid_sensor(self):
+        response = self.client.get(
+            "/api/firms-detections/",
+            {"sensor": "INVALID"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_date(self):
+        response = self.client.get(
+            "/api/firms-detections/",
+            {"date": "2024-99-99"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_limit(self):
+        response = self.client.get(
+            "/api/firms-detections/",
+            {"limit": "-5"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_offset(self):
+        response = self.client.get(
+            "/api/firms-detections/",
+            {"offset": "-1"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    @patch("analysis.views.read_detections")
+    def test_pagination(self, mock_read):
+        mock_read.return_value = [
+            {
+                "id": f"VIIRS-test-{i}",
+                "sensor": "VIIRS",
+            }
+            for i in range(20)
+        ]
+
+        response = self.client.get(
+            "/api/firms-detections/",
+            {"limit": 5, "offset": 10},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["data"]), 5)
+        self.assertEqual(
+            response.data["pagination"]["total"],
+            20,
+        )
+        self.assertTrue(
+            response.data["pagination"]["has_more"]
         )
