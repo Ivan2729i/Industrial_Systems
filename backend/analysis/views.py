@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .services import load_cells
-
+from .services import load_cells, calculate_statistics
 
 @api_view(["GET"])
 def cells_list(request):
@@ -48,4 +48,42 @@ def cells_list(request):
         "data": cells,
     })
 
-# Create your views here.
+
+@api_view(["GET"])
+def statistics_view(request):
+    requested_date = request.query_params.get("date")
+
+    if not requested_date:
+        return Response(
+            {"error": "Debes proporcionar una fecha."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        Date.fromisoformat(requested_date)
+    except ValueError:
+        return Response(
+            {"error": "Formato de fecha invalido."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        cells = load_cells(requested_date)
+        statistics = calculate_statistics(cells)
+
+    except FileNotFoundError:
+        return Response(
+            {"error": "No hay datos para esa fecha."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    except (ValueError, TypeError, KeyError):
+        return Response(
+            {"error": "No se pudieron procesar los datos."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    return Response({
+        "date": requested_date,
+        "statistics": statistics,
+    })

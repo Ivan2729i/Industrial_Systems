@@ -78,3 +78,51 @@ def load_cells(date):
             cells.append(convert_row(row))
 
     return cells
+
+
+def calculate_statistics(cells):
+    def count_if(field):
+        return sum(
+            1 for cell in cells
+            if cell[field]
+        )
+
+    return {
+        "total_cells": len(cells),
+
+        "modis_observed_cells": sum(
+            cell["modis_pixeles"] > 0
+            for cell in cells
+        ),
+
+        "viirs_observed_cells": sum(
+            cell["viirs_pixeles"] > 0
+            for cell in cells
+        ),
+
+        "both_observed_cells": count_if(
+            "observacion_util_ambos"
+        ),
+
+        "modis_fire_pixels": sum(
+            cell["modis_fuego"]
+            for cell in cells
+        ),
+
+        "viirs_fire_pixels": sum(
+            cell["viirs_fuego"]
+            for cell in cells
+        ),
+
+        "both_fire_cells": count_if(
+            "fuego_ambos"
+        ),
+
+        "modis_only_cells": count_if(
+            "deteccion_solo_modis"
+        ),
+
+        "viirs_only_cells": count_if(
+            "deteccion_solo_viirs"
+        ),
+    }
