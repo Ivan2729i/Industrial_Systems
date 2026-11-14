@@ -1,7 +1,7 @@
 
 import csv
 from pathlib import Path
-
+from datetime import date as Date
 from django.conf import settings
 
 
@@ -126,3 +126,35 @@ def calculate_statistics(cells):
             "deteccion_solo_viirs"
         ),
     }
+
+
+import re
+
+def get_available_dates():
+    """
+    Devuelve fechas con archivos de análisis
+    disponibles en el directorio configurado.
+    """
+    dates = set()
+
+    pattern = re.compile(
+        r"^analisis_celdas_(\d{4}-\d{2}-\d{2})\.csv$"
+    )
+
+    for file in CSV_DIRECTORY.glob("analisis_celdas_*.csv"):
+        match = pattern.fullmatch(file.name)
+
+        if not match:
+            continue
+
+        candidate = match.group(1)
+
+        try:
+            parsed = Date.fromisoformat(candidate)
+        except ValueError:
+            continue
+
+        if parsed.isoformat() == candidate:
+            dates.add(candidate)
+
+    return sorted(dates)

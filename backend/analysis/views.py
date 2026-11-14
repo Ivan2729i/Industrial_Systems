@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from datetime import date as Date
-
+from .services import get_available_dates
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -129,3 +129,13 @@ def geojson_view(request):
         )
 
     return Response(geojson)
+
+
+@api_view(["GET"])
+def available_dates_view(request):
+    dates = get_available_dates()
+
+    return Response({
+        "available_dates": dates,
+        "total": len(dates),
+    })

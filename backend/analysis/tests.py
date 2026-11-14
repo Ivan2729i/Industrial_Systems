@@ -126,3 +126,108 @@ class GeoJSONTests(SimpleTestCase):
             coordinates[0],
             coordinates[-1]
         )
+
+
+from unittest.mock import patch
+
+from django.test import SimpleTestCase
+from rest_framework.test import APIClient
+
+
+class StatisticsAPITests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+
+    @patch("analysis.views.load_cells")
+    def test_statistics_returns_data(self, mock_load):
+        mock_load.return_value = [
+            {
+                "modis_pixeles": 5,
+                "viirs_pixeles": 10,
+                "observacion_util_ambos": True,
+                "modis_fuego": 0,
+                "viirs_fuego": 0,
+                "fuego_ambos": False,
+                "deteccion_solo_modis": False,
+                "deteccion_solo_viirs": False,
+            }
+        ]
+
+        response = self.client.get(
+            "/api/statistics/",
+            {"date": "2024-04-19"}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["statistics"]["total_cells"],
+            1
+        )
+        self.assertEqual(
+            response.data["statistics"]["both_observed_cells"],
+            1
+        )
+
+    def test_statistics_requires_date(self):
+        response = self.client.get(
+            "/api/statistics/"
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_statistics_rejects_invalid_date(self):
+        response = self.client.get(
+            "/api/statistics/",
+            {"date": "incorrecta"}
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+
+class AvailableDatesTests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+
+    @patch("analysis.views.get_available_dates")
+    def test_available_dates_success(self, mock_dates):
+        mock_dates.return_value = [
+            "2024-04-08",
+            "2024-04-19",
+        ]
+
+        response = self.client.get(
+            "/api/available-dates/"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["total"], 2)
+        self.assertEqual(
+            response.data["available_dates"],
+            ["2024-04-08", "2024-04-19"],
+        )
+
+    def test_available_dates_service(self):
+        from tempfile import TemporaryDirectory
+        from pathlib import Path
+        from unittest.mock import patch as mock_patch
+        from .services import get_available_dates
+
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+
+            (root / "analisis_celdas_2024-04-19.csv").touch()
+            (root / "analisis_celdas_2024-04-08.csv").touch()
+            (root / "analisis_celdas_2024-99-99.csv").touch()
+
+            with mock_patch(
+                "analysis.services.CSV_DIRECTORY",
+                root,
+            ):
+                dates = get_available_dates()
+
+        self.assertEqual(
+            dates,
+            ["2024-04-08", "2024-04-19"],
+        )
