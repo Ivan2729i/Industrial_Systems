@@ -1,11 +1,15 @@
 from django.test import TestCase
-
+from .pilot_comparisons import load_pilot_comparisons
 from unittest.mock import patch
 from .comparison import build_comparison
 from django.test import SimpleTestCase
 from rest_framework.test import APIClient
 import h3
-
+from .pilot_comparisons import (
+    convert_value,
+    filter_pilot_comparisons,
+    summarize_pilot,
+)
 from .geojson import cell_to_feature
 from .services import load_cells
 from .validators import validate_cell, validate_cells
@@ -604,3 +608,129 @@ class ComparisonTests(SimpleTestCase):
             {"date": "incorrecta"},
         )
         self.assertEqual(response.status_code, 400)
+
+
+class PilotComparisonsTests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+
+        self.records = [
+            {
+                "fecha": "2024-04-06",
+                "modis_sobrevuelo": "A2024097.0925",
+                "viirs_sobrevuelo": "A2024097.0918",
+                "celda_h3": "example-1",
+                "estado_comparacion": "candidata_experimental",
+                "comparacion_candidata": True,
+                "metodologia_validada": False,
+                "modis_fuego": 0,
+                "viirs_fuego": 1,
+            },
+            {
+                "fecha": "2024-04-08",
+                "modis_sobrevuelo": "A2024099.2000",
+                "viirs_sobrevuelo": "A2024099.1954",
+                "celda_h3": "example-2",
+                "estado_comparacion": "fuera_de_umbrales",
+                "comparacion_candidata": False,
+                "metodologia_validada": False,
+                "modis_fuego": 0,
+                "viirs_fuego": 0,
+            },
+        ]
+
+    def test_missing_values_are_null(self):
+        self.assertIsNone(
+            convert_value("diferencia_min", "")
+        )
+        self.assertIsNone(
+            convert_value("qa_originales", "")
+        )
+        self.assertIsNone(
+            convert_value("viirs_detecta_sin_bowtie", "")
+        )
+
+    def test_filter_by_date_and_status(self):
+        result = filter_pilot_comparisons(
+            self.records,
+            date="2024-04-06",
+            status="candidata_experimental",
+        )
+
+        self.assertEqual(len(result), 1)
+
+    def test_summary(self):
+        summary = summarize_pilot(self.records)
+
+        self.assertEqual(summary["total_records"], 2)
+        self.assertEqual(
+            summary["experimental_candidates"], 1
+        )
+        self.assertEqual(
+            summary["validated_records"], 0
+        )
+
+    @patch("analysis.views.load_pilot_comparisons")
+    def test_endpoint(self, mock_load):
+        mock_load.return_value = self.records
+
+        response = self.client.get(
+            "/api/pilot-comparisons/",
+            {"date": "2024-04-06"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["summary"]["total_records"], 1
+        )
+        self.assertEqual(len(response.data["data"]), 1)
+
+    def test_invalid_status(self):
+        response = self.client.get(
+            "/api/pilot-comparisons/",
+            {"status": "validada"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_pagination(self):
+        response = self.client.get(
+            "/api/pilot-comparisons/",
+            {"limit": "-10"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+
+class PilotRealDataTests(SimpleTestCase):
+
+    def test_real_pilot_data(self):
+        records = load_pilot_comparisons()
+
+        self.assertEqual(len(records), 585)
+
+        keys = [
+            (
+                row["modis_sobrevuelo"],
+                row["viirs_sobrevuelo"],
+                row["celda_h3"],
+            )
+            for row in records
+        ]
+
+        self.assertEqual(len(keys), len(set(keys)))
+
+        candidates = sum(
+            row["comparacion_candidata"] is True
+            for row in records
+        )
+
+        self.assertEqual(candidates, 180)
+
+        self.assertTrue(
+            all(
+                row["metodologia_validada"] is False
+                for row in records
+            )
+        )

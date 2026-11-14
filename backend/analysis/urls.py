@@ -9,7 +9,8 @@ from .views import (
     coverage_view,
     temporal_view,
     audit_view,
-    comparison_view
+    comparison_view,
+    pilot_comparisons_view
 )
 
 urlpatterns = [
@@ -48,5 +49,10 @@ urlpatterns = [
         "comparison/",
         comparison_view,
         name="comparison",
+    ),
+    path(
+        "pilot-comparisons/",
+        pilot_comparisons_view,
+        name="pilot-comparisons",
     ),
 ]
