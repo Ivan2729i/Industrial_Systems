@@ -5,7 +5,8 @@ from .views import (
     cells_list,
     statistics_view,
     geojson_view,
-    available_dates_view
+    available_dates_view,
+    coverage_view
 )
 
 urlpatterns = [
@@ -24,5 +25,10 @@ urlpatterns = [
         "available-dates/",
         available_dates_view,
         name="available-dates",
+    ),
+    path(
+        "coverage/",
+        coverage_view,
+        name="coverage",
     ),
 ]

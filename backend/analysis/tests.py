@@ -231,3 +231,77 @@ class AvailableDatesTests(SimpleTestCase):
             dates,
             ["2024-04-08", "2024-04-19"],
         )
+
+
+from .coverage import calculate_coverage
+
+
+class CoverageTests(SimpleTestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_calculate_coverage(self):
+        cells = [
+            {
+                "modis_pixeles": 5,
+                "viirs_pixeles": 10,
+                "observacion_util_ambos": True,
+                "modis_fuego": 0,
+                "viirs_fuego": 1,
+            },
+            {
+                "modis_pixeles": 0,
+                "viirs_pixeles": 8,
+                "observacion_util_ambos": False,
+                "modis_fuego": 0,
+                "viirs_fuego": 0,
+            },
+        ]
+
+        result = calculate_coverage(cells)
+
+        self.assertEqual(result["total_cells"], 2)
+        self.assertEqual(
+            result["coverage"]["modis_observed_cells"],
+            1,
+        )
+        self.assertEqual(
+            result["coverage"]["viirs_observed_cells"],
+            2,
+        )
+        self.assertEqual(
+            result["coverage"]["both_usable_cells"],
+            1,
+        )
+        self.assertEqual(
+            result["fire"]["viirs_fire_cells"],
+            1,
+        )
+        self.assertEqual(
+            result["temporal_comparability"]["status"],
+            "not_evaluated",
+        )
+
+    @patch("analysis.views.load_cells")
+    def test_coverage_endpoint(self, mock_load):
+        mock_load.return_value = []
+
+        response = self.client.get(
+            "/api/coverage/",
+            {"date": "2024-04-19"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["total_cells"], 0)
+
+    def test_coverage_requires_date(self):
+        response = self.client.get("/api/coverage/")
+        self.assertEqual(response.status_code, 400)
+
+    def test_coverage_invalid_date(self):
+        response = self.client.get(
+            "/api/coverage/",
+            {"date": "incorrecta"},
+        )
+        self.assertEqual(response.status_code, 400)
