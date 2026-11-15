@@ -1,4 +1,5 @@
 from datetime import timedelta, datetime, time, timezone
+import hashlib,json
 from django.db.models import Count, Min, Max, Avg, FloatField, Value
 from django.db.models.functions import Floor, TruncDate
 from rest_framework import serializers
@@ -21,6 +22,7 @@ class Query(serializers.Serializer):
     detail=serializers.BooleanField(default=False)
     cell_degrees=serializers.FloatField(default=2,min_value=.05,max_value=10)
     offset=serializers.IntegerField(default=0,min_value=0)
+    compact=serializers.BooleanField(default=False)
 
 @api_view(['GET'])
 def detections(request):
@@ -43,7 +45,7 @@ def detections(request):
         from .firms_service import ensure_day
         for i in range((f['end_date']-f['start_date']).days+1):
             for part in areas: retrieval.append(ensure_day(f['sensor'], f['start_date']+timedelta(days=i), part))
-    qs=FireDetection.objects.filter(source__sensor=f['sensor'],observed_at__gte=datetime.combine(f['start_date'],time.min,tzinfo=timezone.utc),observed_at__lt=datetime.combine(f['end_date']+timedelta(days=1),time.min,tzinfo=timezone.utc)).select_related('source')
+    qs=FireDetection.objects.filter(is_current=True,source_id__in=(['MODIS_SP','MODIS_NRT'] if f['sensor']=='modis' else ['VIIRS_SNPP_SP','VIIRS_SNPP_NRT']),observed_at__gte=datetime.combine(f['start_date'],time.min,tzinfo=timezone.utc),observed_at__lt=datetime.combine(f['end_date']+timedelta(days=1),time.min,tzinfo=timezone.utc))
     if area!='world':
         from django.db.models import Q
         spatial=Q()
@@ -54,11 +56,19 @@ def detections(request):
         names={'aqua':'Aqua','terra':'Terra','snpp':'N','noaa20':'N20','noaa21':'N21'}
         qs=qs.filter(satellite__iexact=names.get(f['satellite'].lower(),f['satellite']))
     if f['sensor']=='viirs': qs=qs.filter(source_id__in=['VIIRS_SNPP_SP','VIIRS_SNPP_NRT'])
+    # Prefer a completed SP snapshot over the NRT revision of the same day.
+    sp='MODIS_SP' if f['sensor']=='modis' else 'VIIRS_SNPP_SP'
+    for run in DetectionImport.objects.filter(source_id=sp,date__range=(f['start_date'],f['end_date']),status='DATOS_DISPONIBLES'):
+        def contains(part):
+            if run.area=='world':return True
+            if part=='world':return False
+            w,s,e,n=map(float,run.area.split(','));a,b,c,d=map(float,part.split(','));return w<=a<=c<=e and s<=b<=d<=n
+        if all(contains(part) for part in areas):qs=qs.exclude(source_id=sp.replace('_SP','_NRT'),observed_at__gte=datetime.combine(run.date,time.min,tzinfo=timezone.utc),observed_at__lt=datetime.combine(run.date+timedelta(days=1),time.min,tzinfo=timezone.utc))
     count=qs.count();offset=f['offset'];limit=f['limit']
     imported=DetectionImport.objects.filter(source__sensor=f['sensor'],date__range=(f['start_date'],f['end_date']),status='DATOS_DISPONIBLES')
     if f['sensor']=='viirs': imported=imported.filter(source_id__in=['VIIRS_SNPP_SP','VIIRS_SNPP_NRT'])
     # Coverage is reported as import provenance, never inferred from an empty point list.
-    coverage=list(imported.values('source_id','date','area','records'))
+    coverage=list(imported.order_by('id').values('source_id','date','area','records','finished_at'))
     def covers(stored,requested):
         if stored=='world':return True
         if requested=='world':return False
@@ -67,7 +77,7 @@ def detections(request):
     missing_dates=[]
     for i in range((f['end_date']-f['start_date']).days+1):
         day=f['start_date']+timedelta(days=i)
-        if not all(any(r['date']==day and covers(r['area'],part) for r in coverage) for part in areas):missing_dates.append(day)
+        if not all(any(r['date']==day and covers(r['area'],part) and (r['source_id'].endswith('_SP') or (r['finished_at'] and (datetime.now(timezone.utc)-r['finished_at']).total_seconds()<1800)) for r in coverage) for part in areas):missing_dates.append(day)
     status=('DATOS_PARCIALES' if count else 'DATOS_NO_IMPORTADOS') if missing_dates else ('DATOS_DISPONIBLES' if count else 'SIN_DETECCIONES')
     if any('ERROR' in r for r in retrieval): status='ERROR_DE_CONSULTA'
     elif any('NO_DISPONIBLES' in r for r in retrieval): status='FUERA_DE_DISPONIBILIDAD'
@@ -79,9 +89,14 @@ def detections(request):
             clusters=list(grouped[:2001])
             if len(clusters)<=2000:break
             size*=2
-        return Response({'status':status,'count':count,'mode':'aggregated','cell_degrees':size,'results':clusters,'retrieval':retrieval,'imports':coverage,'missing_dates':missing_dates})
-    rows=[{'id':o.pk,'latitude':o.latitude,'longitude':o.longitude,'observed_at':o.observed_at,'satellite':o.satellite,'source':o.source_id,'original':o.original} for o in qs.order_by('pk')[offset:offset+limit]]
-    return Response({'status':status,'count':count,'results':rows,'next_offset':offset+limit if offset+limit<count else None,'retrieval':retrieval,'imports':coverage,'missing_dates':missing_dates,'note':'Una lista FIRMS vacia no acredita cobertura ni ausencia de incendios.'})
+        return Response({'status':status,'count':count,'mode':'aggregated','cell_degrees':size,'results':clusters,'retrieval':retrieval,'imports':coverage,'missing_dates':missing_dates,'revision':hashlib.sha256(json.dumps(coverage,default=str,sort_keys=True).encode()).hexdigest()})
+    if f['compact']:
+        from django.db.models import F
+        rows=list(qs.order_by('pk').annotate(confidence=F('original__confidence'),frp=F('original__frp')).values('id','latitude','longitude','observed_at','satellite','source_id','confidence','frp')[offset:offset+limit])
+        for row in rows:row['source']=row.pop('source_id');row['original']={'confidence':row.pop('confidence'),'frp':row.pop('frp')};row['details_deferred']=True
+    else:
+        rows=[{'id':o.pk,'latitude':o.latitude,'longitude':o.longitude,'observed_at':o.observed_at,'satellite':o.satellite,'source':o.source_id,'original':o.original} for o in qs.order_by('pk')[offset:offset+limit]]
+    return Response({'status':status,'count':count,'results':rows,'next_offset':offset+limit if offset+limit<count else None,'retrieval':retrieval,'imports':coverage,'missing_dates':missing_dates,'revision':hashlib.sha256(json.dumps(coverage,default=str,sort_keys=True).encode()).hexdigest(),'note':'Una lista FIRMS vacia no acredita cobertura ni ausencia de incendios.'})
 
 @api_view(['GET'])
 def sensors(request):
@@ -117,3 +132,9 @@ def availability(request):
         return Response({'sensor':sensor,'min_date':min(p['min_date'] for p in valid),'max_date':max(p['max_date'] for p in valid),'products':valid,'timezone':'UTC'})
     except NASAError:
         return Response({'detail':'No fue posible consultar disponibilidad NASA.'},status=502)
+
+@api_view(['GET'])
+def detail(request,pk):
+    row=FireDetection.objects.filter(pk=pk).first()
+    if not row:return Response({'detail':'No encontrada'},status=404)
+    return Response({'id':row.pk,'original':row.original})

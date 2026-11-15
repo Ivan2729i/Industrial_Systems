@@ -1,0 +1,26 @@
+[
+  {
+    "sensor": "modis",
+    "attempt": 0,
+    "result": "NASA_RECUPERADO",
+    "ms": 2250.9493000106886
+  },
+  {
+    "sensor": "modis",
+    "attempt": 1,
+    "result": "CACHE_POSTGRESQL",
+    "ms": 6.909199990332127
+  },
+  {
+    "sensor": "viirs",
+    "attempt": 0,
+    "result": "NASA_RECUPERADO",
+    "ms": 1635.284199990565
+  },
+  {
+    "sensor": "viirs",
+    "attempt": 1,
+    "result": "CACHE_POSTGRESQL",
+    "ms": 5.987400014419109
+  }
+]

@@ -21,7 +21,8 @@ export default function DetectionCard({record,product,onClose}:{record?:Record<s
   const frp=data.frp==null || data.frp==='' ? NaN : Number(data.frp)
   const source=product ? product.product==='FIRMS_OPERATIONAL'?'NASA FIRMS · integración operativa':'NASA Earthdata · Level 2' : String(data.source??'NASA FIRMS')
   return <aside className="cell-detail detection-card" aria-label="Detalle de detección térmica">
-    <div className="detection-heading"><h3>Detección térmica satelital</h3><button onClick={onClose} aria-label="Cerrar detalle de detección">Cerrar</button></div>
+    <div className="detection-heading"><h3>{Number(record?.count)>1?'Concentración de detecciones':'Detección térmica satelital'}</h3><button onClick={onClose} aria-label="Cerrar detalle de detección">Cerrar</button></div>
+    {Number(record?.count)>1 && <p className="detection-context">Grupo visual de {String(record?.count)} detecciones. Consulta un área menor para recuperar las observaciones originales.</p>}
     <dl className="detection-facts">
       <div><dt>Sensor</dt><dd>{product?'Armonizado · MODIS–VIIRS':sensor || 'No informado'}</dd></div>
       <div><dt>Fecha de observación</dt><dd>{valid?date.toLocaleDateString('es-MX',{timeZone:'UTC',year:'numeric',month:'long',day:'numeric'}):'No informada'}</dd></div>

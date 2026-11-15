@@ -1,0 +1,38 @@
+[
+  {
+    "name": "viirs",
+    "repeat": 0,
+    "view_ms": 194.7935999778565,
+    "sql_ms": 155.0,
+    "json_ms": 25.628300005337223,
+    "bytes": 1000309,
+    "queries": 4
+  },
+  {
+    "name": "viirs",
+    "repeat": 1,
+    "view_ms": 158.73510000528768,
+    "sql_ms": 117.0,
+    "json_ms": 24.155699997209013,
+    "bytes": 1000309,
+    "queries": 4
+  },
+  {
+    "name": "harmonized",
+    "repeat": 0,
+    "view_ms": 394.0191000001505,
+    "sql_ms": 370.0,
+    "json_ms": 17.94069999596104,
+    "bytes": 1673674,
+    "queries": 5
+  },
+  {
+    "name": "harmonized",
+    "repeat": 1,
+    "view_ms": 190.09670001105405,
+    "sql_ms": 169.0,
+    "json_ms": 19.53220000723377,
+    "bytes": 1673674,
+    "queries": 5
+  }
+]

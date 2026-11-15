@@ -1,0 +1,10 @@
+Limit  (cost=0.42..790.64 rows=5000 width=32) (actual time=0.011..2.985 rows=5000 loops=1)
+  Buffers: shared hit=823
+  ->  Index Scan using analysis_firedetection_pkey on analysis_firedetection  (cost=0.42..15295.51 rows=96778 width=32) (actual time=0.009..2.773 rows=5000 loops=1)
+        Filter: ((observed_at >= '2024-04-16 00:00:00+00'::timestamp with time zone) AND (observed_at < '2024-04-18 00:00:00+00'::timestamp with time zone) AND ((source_id)::text = 'VIIRS_SNPP_SP'::text))
+        Rows Removed by Filter: 8034
+        Buffers: shared hit=823
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.155 ms
+Execution Time: 3.115 ms

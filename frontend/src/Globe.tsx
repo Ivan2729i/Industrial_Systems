@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import DetectionCard from './DetectionCard'
-import { fetchFirmsComplete } from './firmsData'
+import { fetchFirmsDays } from './firmsData'
 import type { Viewer } from 'cesium'
 import { cellToLatLng, cellToBoundary } from 'h3-js'
 import { setLayerVisibility } from './layerVisibility'
@@ -19,6 +19,7 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected,
   const viewer = useRef<Viewer | null>(null)
   const densityLayers=useRef<Partial<Record<Sensor,import('cesium').ImageryLayer>>>({})
   const firmsLayers = useRef<Partial<Record<Sensor, import('cesium').CustomDataSource>>>({})
+  const dayPrimitives=useRef(new Map<string,import('cesium').PointPrimitiveCollection>())
   const firmsPrimitives=useRef<Partial<Record<Sensor,import('cesium').PointPrimitiveCollection>>>({})
   const responseCache = useRef(new Map<string, {data:any;expires:number}>())
   const harmonicPoints=useRef<import('cesium').CustomDataSource | null>(null)
@@ -182,9 +183,10 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected,
     layer.show=!firms && !showH3 && harmonizedReady
     setSelectedProduct(null)
     if(!layer.show){map.scene.requestRender();return}
-    layer.entities.removeAll()
+    const wanted=new Set(harmonized.map(p=>'harmonized-'+p.id))
+    for(const entity of [...layer.entities.values])if(!wanted.has(entity.id))layer.entities.remove(entity)
     const lookup=new Map<string,HarmonizedPoint>()
-    for(const product of harmonized){lookup.set(product.id,product);layer.entities.add({id:'harmonized-'+product.id,position:Cesium.Cartesian3.fromDegrees(product.longitude,product.latitude,150),point:{pixelSize:7,color:Cesium.Color.RED,outlineColor:Cesium.Color.WHITE.withAlpha(.65),outlineWidth:1}})}
+    for(const product of harmonized){lookup.set(product.id,product);if(!layer.entities.getById('harmonized-'+product.id))layer.entities.add({id:'harmonized-'+product.id,position:Cesium.Cartesian3.fromDegrees(product.longitude,product.latitude,150),point:{pixelSize:7,color:Cesium.Color.RED,outlineColor:Cesium.Color.WHITE.withAlpha(.65),outlineWidth:1}})}
     const handler=new Cesium.ScreenSpaceEventHandler(map.scene.canvas)
     handler.setInputAction((e:{position:import('cesium').Cartesian2})=>{const id=map.scene.pick(e.position)?.id?.id;setSelectedProduct(typeof id==='string'?lookup.get(id.replace('harmonized-',''))??null:null)},Cesium.ScreenSpaceEventType.LEFT_CLICK)
     map.scene.requestRender()
@@ -201,8 +203,8 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected,
   useEffect(() => {
     const map = viewer.current
     if (!map) return
-    for(const points of Object.values(firmsPrimitives.current))if(points)points.show=false
-    for(const [sensor,layer] of Object.entries(densityLayers.current))if(layer)layer.show=!!firms && firms.sensor===sensor && displayMode==='density'
+    for(const points of dayPrimitives.current.values())if(points)points.show=false
+    for(const layer of Object.values(densityLayers.current))if(layer)layer.show=false
     setLayerVisibility({...firmsLayers.current,h3:h3Layer.current??undefined,harmonized:harmonicPoints.current??undefined},firms?firms.sensor:showH3?'h3':'harmonized')
     if(harmonicPoints.current && !firms && !showH3)harmonicPoints.current.show=harmonizedReady
     map.scene.requestRender()
@@ -231,43 +233,44 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected,
       if (retrieve && firms.region && !searchArea) params.set('region', firms.region)
       if (firms.satellite) params.set('satellite', firms.satellite)
       setDetection(null)
-      const cacheKey=params.toString()
-      layer!.show=false
-      map.scene.requestRender()
-      const cached=responseCache.current.get(cacheKey)
-      const request=cached && cached.expires>Date.now() ? Promise.resolve(cached.data) : fetchFirmsComplete(params,signal,(loaded,total)=>{if(!signal.aborted)setFirmsStatus(`Cargando ${loaded} / ${total} detecciones…`)})
-      request.then(async page => {
-        if (signal.aborted || map.isDestroyed()) return
-        if (!page.status.includes('ERROR')) responseCache.current.set(cacheKey,{data:page,expires:Date.now()+120000})
-        if(responseCache.current.size>12) responseCache.current.delete(responseCache.current.keys().next().value!)
+      if(bbox==='world' && (Date.parse(firms.end)-Date.parse(firms.start))/86400000>=3 && !density){params.set('aggregate','true');params.set('detail','false')}
+      const groupedView=params.get('aggregate')==='true'&&!density
+      const heatRows=new Map<string,import('./firmsData').FirmsPage>()
+      let heatGeneration=0
+      let heatTimer:ReturnType<typeof setTimeout>|undefined
+      signal.addEventListener('abort',()=>clearTimeout(heatTimer),{once:true})
+      const progress=(p:import('./firmsData').DayProgress)=>{if(!signal.aborted)setFirmsStatus(`${p.count.toLocaleString('es')} detecciones disponibles · ${p.done}/${p.days} días completos${groupedView?' · Agrupación mundial; consulta un área para detalle':''}${p.missing.length?' · Pendientes: '+p.missing.join(', '):''}${Object.keys(p.errors).length?' · Error: '+Object.entries(p.errors).map(([d,e])=>d+': '+e).join('; '):''}`)}
+      fetchFirmsDays(params,signal,async(day,key,page,p)=>{
+        if(signal.aborted || map.isDestroyed())return
         layer!.show=true
-        layer!.entities.removeAll()
-        if (density) {
-          const raster=densityImage(page.results,page.cell_degrees??1,bbox)
-          const provider=await Cesium.SingleTileImageryProvider.fromUrl(raster.image,{rectangle:Cesium.Rectangle.fromDegrees(...raster.rectangle)})
-          if(signal.aborted || map.isDestroyed())return
-          const previous=densityLayers.current[firms.sensor]
-          if(previous)map.imageryLayers.remove(previous,true)
-          const overlay=new Cesium.ImageryLayer(provider);overlay.alpha=.85
-          densityLayers.current[firms.sensor]=overlay;map.imageryLayers.add(overlay)
-        }
         if(!density){
-          const points=new Cesium.PointPrimitiveCollection()
-          for(const row of page.results)points.add({position:Cesium.Cartesian3.fromDegrees(row.longitude,row.latitude,150),pixelSize:5,color:Cesium.Color.RED,outlineColor:Cesium.Color.WHITE,outlineWidth:1,id:{kind:'firms',attributes:{...row.original,id:row.id,sensor:firms.sensor,satellite:row.satellite,source:row.source,observed_at:row.observed_at,latitude:row.latitude,longitude:row.longitude}}})
-          const previous=firmsPrimitives.current[firms.sensor];firmsPrimitives.current[firms.sensor]=points;map.scene.primitives.add(points);if(previous)map.scene.primitives.remove(previous)
+          const renderKey=key+'|'+(page.revision??String(page.count))
+          let points=dayPrimitives.current.get(renderKey)
+          if(!points){const buildStart=performance.now();points=new Cesium.PointPrimitiveCollection();let slice=performance.now(),index=0;for(const row of page.results){if(++index%1000===0&&performance.now()-slice>8){await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));if(signal.aborted||map.isDestroyed()){points.destroy();return}slice=performance.now()}points.add({position:Cesium.Cartesian3.fromDegrees(row.longitude,row.latitude,150),pixelSize:5,color:Cesium.Color.RED,outlineColor:Cesium.Color.WHITE,outlineWidth:1,id:{kind:'firms',attributes:{...row.original,id:row.id,sensor:firms.sensor,satellite:row.satellite,source:row.source,observed_at:row.observed_at,latitude:row.latitude,longitude:row.longitude,count:row.count??1}}})};if(signal.aborted||map.isDestroyed()){points.destroy();return}map.scene.primitives.add(points);dayPrimitives.current.set(renderKey,points);const built=performance.now();performance.measure('TerraFlare:build:'+firms.sensor+':'+day,{start:buildStart,end:built});const stop=map.scene.postRender.addEventListener(()=>{stop();performance.measure('TerraFlare:first-render:'+firms.sensor+':'+day,{start:built,end:performance.now()})})}
+          points.show=true
+          for(const [id,cached] of dayPrimitives.current)if(dayPrimitives.current.size>32 && !cached.show){map.scene.primitives.remove(cached);dayPrimitives.current.delete(id)}
+        }else{
+          heatRows.set(day,page);const generation=++heatGeneration
+          clearTimeout(heatTimer);heatTimer=setTimeout(()=>{if(signal.aborted)return
+          const rows=Array.from(heatRows.values()).flatMap(p=>p.results)
+          const raster=densityImage(rows,page.cell_degrees??1,bbox)
+          void Cesium.SingleTileImageryProvider.fromUrl(raster.image,{rectangle:Cesium.Rectangle.fromDegrees(...raster.rectangle)}).then(provider=>{
+            if(signal.aborted||map.isDestroyed()||generation!==heatGeneration)return
+            const previous=densityLayers.current[firms.sensor],overlay=new Cesium.ImageryLayer(provider);overlay.alpha=.85;densityLayers.current[firms.sensor]=overlay;map.imageryLayers.add(overlay);if(previous)map.imageryLayers.remove(previous,true);map.scene.requestRender()
+          }).catch(()=>{if(!signal.aborted)setFirmsStatus('No se pudo actualizar la densidad.')})
+          },40)
         }
-
-        setFirmsStatus(page.status.replaceAll('_',' ') + ' / ' + page.results.length + (page.mode === 'aggregated' ? ' grupos / ' : ' puntos / ') + page.count + ' detecciones')
-        map.scene.requestRender()
-      }).catch(e => { if (e.name !== 'AbortError') setFirmsStatus('Error consultando FIRMS: ' + e.message) })
+        progress(p);map.scene.requestRender()
+      },progress).catch(e=>{if(!signal.aborted)setFirmsStatus('Error consultando FIRMS: '+e.message)})
     }
+
     const handler = new Cesium.ScreenSpaceEventHandler(map.scene.canvas)
     handler.setInputAction((event: { position: import('cesium').Cartesian2 }) => {
       const picked=map.scene.pick(event.position);setDetection(picked?.id?.kind==='firms'?picked.id.attributes:null)
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
     load()
     return () => { controller?.abort(); handler.destroy(); /* Layers persist across tabs; Viewer owns their destruction. */ }
-  }, [firms?.start, firms?.end, firms?.sensor, firms?.satellite, firms?.region, focusPoint, searchArea, searchId, displayMode, firms?.valid, showH3,harmonizedReady])
+  }, [firms?.start, firms?.end, firms?.sensor, firms?.satellite, firms?.region, focusPoint, searchArea, searchId, displayMode, firms?.valid, showH3])
   useEffect(() => {
     const map=viewer.current
     if(!map || !drawing) return
@@ -302,6 +305,19 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected,
     window.addEventListener('keydown',escape)
     return ()=>{handler.destroy();window.removeEventListener('keydown',escape);if(!map.isDestroyed()){map.scene.screenSpaceCameraController.enableInputs=true;if(shape)map.entities.remove(shape);map.scene.requestRender()}}
   },[drawing, !!firms])
+  useEffect(()=>{
+    const id=detection?.id
+    if(!id)return
+    const controller=new AbortController()
+    apiGet<{original:Record<string,unknown>}>('/v1/detections/'+id+'/',controller.signal).then(row=>setDetection(current=>current?.id===id?{...row.original,...current,technical_original:row.original}:current)).catch(()=>{})
+    return()=>controller.abort()
+  },[detection?.id])
+  useEffect(()=>{
+    if(!selectedProduct?.details_deferred)return
+    const id=selectedProduct.id,controller=new AbortController()
+    apiGet<HarmonizedPoint>('/v1/harmonized-detections/'+id+'/',controller.signal).then(full=>setSelectedProduct(current=>current?.id===id?{...full,represented_count:current.represented_count}:current)).catch(()=>{})
+    return()=>controller.abort()
+  },[selectedProduct?.id])
   return <div className="globe-shell"><section className="map" aria-label="Globo terrestre interactivo">
     {firms && detection && <DetectionCard record={detection} onClose={()=>setDetection(null)}/>}
     {!firms && !showH3 && selectedProduct && <DetectionCard product={selectedProduct} onClose={()=>setSelectedProduct(null)}/>}
