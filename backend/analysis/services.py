@@ -1,7 +1,7 @@
 
 import csv
 from pathlib import Path
-
+from datetime import date as Date
 from django.conf import settings
 
 
@@ -78,3 +78,83 @@ def load_cells(date):
             cells.append(convert_row(row))
 
     return cells
+
+
+def calculate_statistics(cells):
+    def count_if(field):
+        return sum(
+            1 for cell in cells
+            if cell[field]
+        )
+
+    return {
+        "total_cells": len(cells),
+
+        "modis_observed_cells": sum(
+            cell["modis_pixeles"] > 0
+            for cell in cells
+        ),
+
+        "viirs_observed_cells": sum(
+            cell["viirs_pixeles"] > 0
+            for cell in cells
+        ),
+
+        "both_observed_cells": count_if(
+            "observacion_util_ambos"
+        ),
+
+        "modis_fire_pixels": sum(
+            cell["modis_fuego"]
+            for cell in cells
+        ),
+
+        "viirs_fire_pixels": sum(
+            cell["viirs_fuego"]
+            for cell in cells
+        ),
+
+        "both_fire_cells": count_if(
+            "fuego_ambos"
+        ),
+
+        "modis_only_cells": count_if(
+            "deteccion_solo_modis"
+        ),
+
+        "viirs_only_cells": count_if(
+            "deteccion_solo_viirs"
+        ),
+    }
+
+
+import re
+
+def get_available_dates():
+    """
+    Devuelve fechas con archivos de análisis
+    disponibles en el directorio configurado.
+    """
+    dates = set()
+
+    pattern = re.compile(
+        r"^analisis_celdas_(\d{4}-\d{2}-\d{2})\.csv$"
+    )
+
+    for file in CSV_DIRECTORY.glob("analisis_celdas_*.csv"):
+        match = pattern.fullmatch(file.name)
+
+        if not match:
+            continue
+
+        candidate = match.group(1)
+
+        try:
+            parsed = Date.fromisoformat(candidate)
+        except ValueError:
+            continue
+
+        if parsed.isoformat() == candidate:
+            dates.add(candidate)
+
+    return sorted(dates)
