@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#080e18;color:#edf4ff;--muted:#a7b8ce;--line:#293a50;--accent:#7ed8ff}
+body{margin:0;min-width:320px;background:radial-gradient(ellipse at 55% 0%,#142439,transparent 55%)}
+button,select,input{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default;opacity:.45}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.shell{max-width:1550px;margin:auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px clamp(14px,4vw,56px);border-bottom:1px solid var(--line);background:#0a111de8}
+.brand{display:flex;align-items:center;gap:9px;font-size:22px;font-weight:700;letter-spacing:.06em}
+.brand img{width:60px;height:auto}
+.top nav,.toggles,.map-actions{display:flex;gap:5px}
+.top nav button,.toggles button,.map-actions button,.status button{padding:8px 12px;border:1px solid var(--line);border-radius:7px;background:#101b2a}
+.top nav button[aria-current],.toggles button[aria-pressed=true]{color:var(--accent);background:#172f45;border-color:#385d78}
+.mission,.filters label,.filters legend,.legend{font-size:12px;color:var(--muted)}
+.mission{letter-spacing:.09em}
+.content{padding:24px clamp(14px,4vw,56px) 20px}
+.heading h1{font-size:clamp(25px,4vw,40px);font-weight:720;line-height:1.12}
+.heading p,.note,footer,.analysis>p{color:var(--muted);font-size:13px;line-height:1.6;margin-top:8px}
+.filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:20px 0}
+.filters label{display:grid;gap:5px;min-width:128px}
+.filters legend{margin-bottom:5px}
+.filters input:not([type=checkbox]),.filters select{min-height:38px;border-radius:7px;padding:6px 9px;border:1px solid var(--line);background:#101b29;color:#e5effb}
+.filters select:disabled{color:#a4b2c6}
+.filters .check{display:flex;align-items:center;align-self:center;gap:8px;min-width:0}
+.filters input[type=checkbox]{accent-color:var(--accent)}
+.status{padding:10px 13px;margin-bottom:12px;border:1px solid var(--line);background:#172334;border-radius:8px;font-size:14px}
+.dashboard{display:grid;gap:14px}
+.map-view{grid-template-columns:minmax(0,1fr) minmax(260px,310px)}
+.map{position:relative;isolation:isolate;height:clamp(360px,65vh,740px);overflow:hidden;border-radius:14px;border:1px solid var(--line);background:#060b14}
+.globe{position:absolute;inset:0}
+.map-actions{position:absolute;top:12px;left:12px;z-index:2;flex-wrap:wrap;font-size:12px}
+.map-error,.legend{position:absolute;padding:7px 10px;border-radius:6px;background:#0b1524ed}
+.map-error{inset:65px auto auto 12px}
+.legend{bottom:24px;left:12px;display:flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff514c}
+.sensor-panel,.analysis{padding:16px;background:#101a28;border:1px solid var(--line);border-radius:14px;min-width:0}
+h2{font-size:17px;font-weight:700;margin-bottom:11px}
+.cards,.metrics{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.map-view .cards{grid-template-columns:1fr}
+.metrics{grid-template-columns:repeat(3,minmax(0,1fr));margin:14px 0}
+.card{padding:12px;background:#142235;border:1px solid var(--line);border-top:2px solid var(--line);border-radius:9px}
+.card h3{font-weight:700}
+.card h3 span,.card p{color:var(--muted);font-size:12px;font-weight:500}
+.card dl{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:10px;font-size:13px}
+.card dd,.metrics strong{font-weight:700}
+.metrics strong{font-size:26px}
+.chart{height:260px;min-width:0}
+footer{border-top:1px solid var(--line);padding-top:10px;margin-top:16px}
+footer p+p{margin-top:5px}
+@media(max-width:850px){.map-view{grid-template-columns:1fr}.map-view .cards{grid-template-columns:repeat(2,minmax(0,1fr))}.mission{display:none}}
+@media(max-width:480px){.top{flex-wrap:wrap;gap:8px}.top nav{width:100%}.top nav button{flex:1}.cards,.map-view .cards{grid-template-columns:1fr}.metrics .card{padding:7px;font-size:12px}.content{padding-top:17px}}
+
+/* Layout inspirado en el boceto: globo ancho y resultados debajo */
+.top nav button{display:flex;align-items:center;gap:8px}
+.tab-letter{display:inline-grid;place-items:center;width:24px;height:24px;border:1px solid #45627c;border-radius:5px;font-weight:800;color:#91dcff}
+.map-view{grid-template-columns:minmax(0,1fr)}
+.map{height:clamp(420px,67vh,760px)}
+.below-map{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:18px;background:#101a28}
+.below-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.below-title h2{margin:0}.below-title p{color:var(--muted);font-size:12px;margin-top:5px}
+.selection-pill{white-space:nowrap;border:1px solid #385d78;border-radius:18px;padding:6px 10px;color:#91dcff;font-size:12px}
+.selection-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.selection-summary>div{background:#142235;border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+.selection-summary span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
+.selection-summary strong{font-size:14px;overflow-wrap:anywhere}
+.observation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.observation-grid .card h3 span{display:inline-block;margin-left:7px}
+.harmonization-summary{margin-top:18px}.harmonization-summary>h3,.data-heading{font-size:15px;font-weight:700;margin:18px 0 10px}
+.table-scroll{overflow-x:auto}.observations-table{width:100%;border-collapse:collapse;text-align:left;font-size:12px;white-space:nowrap}
+.observations-table th,.observations-table td{padding:11px 12px;border-bottom:1px solid var(--line)}
+.observations-table th{color:#9bdfff;background:#17283b}.observations-table td{color:#dce9f9}
+.empty-table{padding:20px;border:1px dashed #344762;border-radius:8px;color:var(--muted);font-size:13px}
+@media(max-width:700px){.selection-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.observation-grid{grid-template-columns:1fr}.below-map{padding:12px}.top nav button{gap:4px;padding:7px}}
+@media(max-width:420px){.top nav button{font-size:11px}.tab-letter{width:20px;height:20px}}
+
+/* Navegación integrada en el panel principal, antes del encabezado */
+.top{min-height:78px}
+.brand{border:0;background:transparent;color:inherit;padding:0}
+.view-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;width:100%;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#101b2a;margin:0 0 30px}
+.view-tabs button{border:0;border-right:1px solid var(--line);border-bottom:3px solid transparent;display:flex;align-items:center;justify-content:center;gap:12px;min-width:0;min-height:66px;padding:12px 8px;background:transparent;color:#b9cce3;font-size:clamp(14px,1.6vw,20px);font-weight:650;transition:background .16s,color .16s,border-color .16s}
+.view-tabs button:last-child{border-right:0}
+.view-tabs button:hover{background:#172a40;color:#fff}
+.view-tabs button.selected{background:#163249;color:#83ddff;border-bottom-color:#58c9ff}
+.view-tabs .tab-letter{width:30px;height:30px;flex-shrink:0;border-radius:7px}
+.heading{margin-bottom:8px}
+.single-sensor{display:grid;gap:5px;padding:0 8px;color:var(--muted);font-size:12px}
+.single-sensor strong{font-size:14px;color:#7ed8ff}
+.method-notice{border-left:3px solid #7ed8ff;padding:12px 14px;background:#14283c;color:#b9cde2;font-size:13px;line-height:1.5;border-radius:4px;margin-bottom:14px}
+@media(max-width:600px){.top{min-height:64px}.view-tabs{margin-bottom:20px}.view-tabs button{min-height:57px;gap:7px;font-size:13px}.view-tabs .tab-letter{width:23px;height:23px}.brand img{width:45px}.brand{font-size:19px}}
+
+/* Ajustes de navegación y filtros solicitados */
+.header-left{display:flex;align-items:center;gap:18px;min-width:0}
+.menu-wrapper{position:relative;flex:none}
+.menu-trigger{width:42px;height:42px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;border:1px solid var(--line);background:#101b2a;border-radius:9px;color:#d5e8ff}
+.menu-trigger span{display:block;width:19px;height:2px;border-radius:2px;background:currentColor}
+.menu-trigger:hover,.menu-trigger[aria-expanded=true]{background:#19354c;border-color:#4a7c9d}
+.dropdown-menu{position:absolute;top:calc(100% + 9px);left:0;z-index:20;min-width:215px;padding:7px;background:#122235;border:1px solid #39516c;box-shadow:0 12px 30px #0008;border-radius:10px}
+.dropdown-menu button{display:block;width:100%;border:none;background:none;color:#e6f2ff;text-align:left;font-size:14px;padding:11px 12px;border-radius:7px}
+.dropdown-menu button:hover{background:#25445f}
+.header-left .brand{margin-left:8px}
+.view-tabs{margin-bottom:25px}
+.view-tabs button{min-height:50px;padding:8px 8px;font-size:clamp(14px,1.5vw,18px);border-bottom-width:2px;gap:10px}
+.view-tabs .tab-letter{width:26px;height:26px}
+.date-range{display:flex;align-items:end;flex-wrap:wrap;gap:10px}
+.date-range label{min-width:148px}
+.date-range input{width:100%}
+@media(max-width:600px){.header-left{gap:9px}.header-left .brand{margin-left:2px}.menu-trigger{width:36px;height:36px}.view-tabs button{min-height:46px;padding:7px 4px;gap:6px;font-size:12px}.view-tabs .tab-letter{width:21px;height:21px}.date-range{width:100%}.date-range label{flex:1;min-width:125px}}
+
+/* Menú lateral de navegación: entrada destacada, inspirado en barras administrativas */
+.top{position:relative;z-index:25}
+.menu-trigger{flex-shrink:0}
+.menu-trigger[aria-expanded=true]{background:#234966;border-color:#66c9f7;box-shadow:0 0 0 2px #44caff22}
+.menu-backdrop{position:fixed;inset:0;background:#020814ad;border:0;border-radius:0;z-index:29;cursor:default}
+.side-menu{position:fixed;top:0;bottom:0;left:0;width:min(340px,90vw);background:#111f30;border-right:1px solid #49647e;z-index:30;box-shadow:14px 0 50px #0009;display:flex;flex-direction:column;animation:side-enter .18s ease-out}
+@keyframes side-enter{from{transform:translateX(-20px);opacity:.7}to{transform:translateX(0);opacity:1}}
+.side-menu-heading{height:88px;padding:0 20px 0 25px;display:flex;align-items:center;justify-content:space-between;color:#d6e9fb;letter-spacing:.11em;font-weight:750;font-size:15px;border-bottom:1px solid #2f4660;background:#0a1524}
+.side-menu-heading button{border:1px solid #3d5773;border-radius:8px;background:#162c44;color:#e7f4ff;font-size:28px;line-height:1;width:37px;height:37px}
+.side-menu nav{padding:18px 0;display:block}
+.side-menu-item{display:flex;align-items:center;gap:14px;width:100%;padding:19px 22px;border:0;border-left:5px solid transparent;background:transparent;text-align:left;color:#dce8f9;font-size:16px;font-weight:650}
+.side-menu-item:hover{background:#223c57}
+.side-menu-item.active{border-left-color:#4bcdff;background:#214561;color:#f2fcff}
+.menu-home-icon{font-size:28px;line-height:1;width:28px;text-align:center}
+.menu-item-chevron{margin-left:auto;font-size:27px;opacity:.85;line-height:1}
+.side-menu-footer{margin-top:auto;padding:18px 24px;color:#89a5c2;font-size:12px;border-top:1px solid #30435a}
+/* Preserva el zoom nativo del globo: no ampliar el lienzo ni aplicar filtros de nitidez a las teselas */
+.globe canvas{display:block}
+
+/* Autocompletado de lugares, sin depender de los registros de incendios */
+.filters{position:relative;z-index:10}
+.geo-field{position:relative;display:flex;flex-direction:column;gap:5px;min-width:210px;max-width:280px;flex:1;font-size:12px;color:var(--muted)}
+.geo-input-wrap{position:relative}
+.filters .geo-field input{width:100%;min-height:38px;padding-right:34px}
+.geo-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:25px;height:25px;border:0;border-radius:5px;background:#243950;color:#d4e9f9;font-size:19px;line-height:1}
+.geo-options{position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:275px;overflow:auto;background:#142338;border:1px solid #51708d;border-radius:9px;box-shadow:0 16px 36px #000b;z-index:50;padding:5px}
+.geo-options button{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;background:transparent;border:0;border-radius:6px;color:#eef8ff;padding:9px}
+.geo-options button:hover,.geo-options button:focus-visible{background:#234b67}
+.geo-options small{font-size:11px;color:#92b9d4}
+.geo-options p{padding:10px;margin:0;color:#a9bed1}
+.geo-note{font-size:12px;line-height:1.5;color:#a6c1da;margin:0 0 12px}
+/* Cesium debe mostrar los créditos de Esri/Cesium: solo se reubican. */
+.map-credits{position:absolute;right:9px;bottom:5px;z-index:4;max-width:75%;font-size:10px;color:#e7f5ff;background:#07111bd9;border-radius:4px;padding:2px 5px}
+.map-credits a{color:#bde7ff}
+.map-credits .cesium-credit-logoContainer img{max-height:16px}
+.map-credits .cesium-credit-textContainer{font-size:10px}
+.map .legend{bottom:35px}
+@media(max-width:650px){.geo-field{max-width:none;min-width:140px;flex-basis:45%}.map-credits{max-width:90%;font-size:9px}}
+
+.geo-options button[aria-selected="true"]{background:#234b67;outline:1px solid #3a7194}
+.geo-field{z-index:5}.geo-field:focus-within{z-index:80}
+/* Coordenadas geográficas visibles dentro del globo, sin tapar la atribución cartográfica. */
+.map-coordinate-display{position:absolute;left:12px;bottom:37px;z-index:3;background:#081521e8;border:1px solid #395a75;border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px;pointer-events:none;color:#f2f8ff;box-shadow:0 4px 20px #0007;max-width:calc(100% - 24px)}
+.map-coordinate-display span{font-size:10px;letter-spacing:.08em;color:#8ccdec}
+.map-coordinate-display strong{font-size:13px;font-variant-numeric:tabular-nums}
+.map-coordinate-display small{font-size:10px;color:#b2c9db}
+
+/* Desplegables geográficos siempre visibles al abrir el campo. */
+.geo-input-wrap input{padding-right:65px !important}
+.geo-dropdown-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:25px;height:28px;border:1px solid #446780;border-radius:5px;background:#1b344c;color:#bde8ff;cursor:pointer;font-size:20px;line-height:20px}
+.geo-clear{right:34px}
+.geo-options{max-height:320px;overflow-y:auto;z-index:200}
+.geo-options-heading{position:sticky;top:0;background:#172b40;color:#9ddcff;padding:9px;font-size:12px;font-weight:600;z-index:1;border-bottom:1px solid #3c6079}
+.geo-options button{cursor:pointer}
+.geo-field:focus-within{z-index:220}
