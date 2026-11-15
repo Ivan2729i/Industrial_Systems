@@ -109,6 +109,7 @@ function App() {
           <button type="button" className="side-menu-item active" aria-current="page" onClick={() => { setTab('MODIS'); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
             <span className="menu-home-icon" aria-hidden="true">⌂</span><span>Pantalla principal</span><span className="menu-item-chevron" aria-hidden="true">›</span>
           </button>
+          <button className="side-menu-item" disabled>Analítica <small>Fase 2 · Próximamente</small></button><button className="side-menu-item" disabled>Blockchain <small>Fase 3 · Próximamente</small></button>
         </nav>
         <div className="side-menu-footer">TerraFlare · NASA Space Apps Challenge</div>
       </aside>
@@ -154,7 +155,7 @@ function App() {
 
       {!globalFirms && !showH3 && <div className="nasa-availability"><label>Producto <select aria-label="Producto armonizado" value={operational?'operational':'level2'} onChange={e=>setOperational(e.target.value==='operational')}><option value="operational">Integración mundial FIRMS</option><option value="level2">Armonización científica Level 2</option></select></label>{!operational && <label>Versión <select value={productVersion} onChange={e=>setProductVersion(e.target.value)}><option value="">Unificado sin duplicados de reprocesamiento</option>{pointCatalog.data?.versions.map(v=><option key={v.version}>{v.version}</option>)}</select></label>}<span>{operational ? operationalQuery.data?.count??0 : pointsQuery.data?.length??0} detecciones armonizadas</span></div>}
       <div className="dashboard map-view">
-        <Globe onWorld={()=>{setScientificArea('');setSelectedCountry(null);setSelectedPlace(null);setSelectedCity(null)}} operational={operational} harmonized={pointRows} showH3={showH3} onShowH3={setShowH3} onAreaSelected={setScientificArea} firms={globalFirms ? { start: startDate, end: endDate, sensor, satellite, region, valid: !dateRangeError } : undefined} focusPoint={selectedCity ?? selectedPlace ?? selectedCountry} rows={globalFirms ? empty : visible} active={tab === 'MODIS' ? ['modis'] : tab === 'VIIRS' ? ['viirs'] : [...sensors]} />
+        <Globe harmonizedReady={!dateRangeError && (operational?operationalQuery:pointsQuery).status==='success'} onWorld={()=>{setScientificArea('');setSelectedCountry(null);setSelectedPlace(null);setSelectedCity(null)}} operational={operational} harmonized={pointRows} showH3={showH3} onShowH3={setShowH3} onAreaSelected={setScientificArea} firms={globalFirms ? { start: startDate, end: endDate, sensor, satellite, region, valid: !dateRangeError } : undefined} focusPoint={selectedCity ?? selectedPlace ?? selectedCountry} rows={globalFirms ? empty : visible} active={tab === 'MODIS' ? ['modis'] : tab === 'VIIRS' ? ['viirs'] : [...sensors]} />
         {false && <aside className="sensor-panel" aria-label="Observaciones por sensor">
           <h2>{tab === 'MODIS' ? 'Resumen de observación' : 'Productos y calidad por sensor'}</h2>
           <div className="cards">{sensors.map(sensor => {

@@ -115,6 +115,7 @@ class DetectionImport(models.Model):
         constraints = [models.UniqueConstraint(fields=['source','date','area'],name='unique_firms_daily_import')]
 
 class FireDetection(models.Model):
+    is_current = models.BooleanField(default=True)
     fingerprint = models.CharField(max_length=64, unique=True)
     source = models.ForeignKey(SatelliteSource, on_delete=models.PROTECT)
     data_import = models.ForeignKey(DetectionImport, on_delete=models.PROTECT)
