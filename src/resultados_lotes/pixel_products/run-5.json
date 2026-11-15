@@ -1,0 +1,25 @@
+{
+  "method": "L2_FOOTPRINT_ONE_TO_MANY_EXPLORATORY_V1",
+  "pixels": [],
+  "detections": [],
+  "conservation": {
+    "source_audit": {
+      "MODIS": {
+        "positive_mask_pixels_in_granule": 15,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 15,
+        "retained_in_scope": 0
+      },
+      "VIIRS": {
+        "positive_mask_pixels_in_granule": 996,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 996,
+        "retained_in_scope": 0
+      }
+    },
+    "input_positive_pixels": 0,
+    "output_members": 0,
+    "output_detections": 0
+  },
+  "h3_source_version": "world_batch_v2"
+}

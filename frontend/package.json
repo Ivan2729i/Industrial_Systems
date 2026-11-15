@@ -28,5 +28,8 @@
     "vite": "^7.3.8",
     "vite-plugin-static-copy": "^3.4.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
+  }
 }

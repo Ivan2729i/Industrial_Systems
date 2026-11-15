@@ -136,7 +136,7 @@ def runs(request):
 def scientific_runs(request):
     from .models import HarmonizationRun
     rows=list(HarmonizationRun.objects.order_by('-id').values('id','region_id','date','version','resolution','status','parameters','products','records','error_type')[:200])
-    public={'bbox','date','version','resolution','modis','viirs','region','kind','pairs_total','pairs_completed'}
+    public={'bbox','date','version','resolution','modis','viirs','region','kind','pairs_total','pairs_completed','pixel_detections_completed','pixel_product'}
     for row in rows: row['parameters']={k:v for k,v in row['parameters'].items() if k in public}
     return Response(rows)
 

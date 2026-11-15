@@ -1,21 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Viewer } from 'cesium'
 import { cellToLatLng, cellToBoundary } from 'h3-js'
+import { setLayerVisibility } from './layerVisibility'
 import { densityImage } from './density'
-import { apiGet, type Cell, type Sensor } from './data'
+import { apiGet, type Cell, type Sensor, type HarmonizedPoint } from './data'
 import type { Place } from './LocationSearch'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 
 declare global { interface Window { Cesium: typeof import('cesium') } }
 const Cesium = window.Cesium
 
-type Props = { onAreaSelected?: (bbox:string)=>void; rows: Cell[]; active: Sensor[]; focusPoint: Place | null; firms?: { start: string; end: string; sensor: Sensor; satellite: string; region: string; valid: boolean } }
+type Props = { onWorld?:()=>void; operational?:boolean; harmonized?:HarmonizedPoint[]; showH3?:boolean; onShowH3?:(value:boolean)=>void; onAreaSelected?: (bbox:string)=>void; rows: Cell[]; active: Sensor[]; focusPoint: Place | null; firms?: { start: string; end: string; sensor: Sensor; satellite: string; region: string; valid: boolean } }
 
-export default function Globe({ rows, active, focusPoint, firms, onAreaSelected }: Props) {
+export default function Globe({ rows, active, focusPoint, firms, onAreaSelected, harmonized=[], showH3=false, onShowH3, operational=false, onWorld }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const viewer = useRef<Viewer | null>(null)
+  const densityLayers=useRef<Partial<Record<Sensor,import('cesium').ImageryLayer>>>({})
   const firmsLayers = useRef<Partial<Record<Sensor, import('cesium').CustomDataSource>>>({})
   const responseCache = useRef(new Map<string, {data:any;expires:number}>())
+  const harmonicPoints=useRef<import('cesium').CustomDataSource | null>(null)
+  const [selectedProduct,setSelectedProduct]=useState<HarmonizedPoint|null>(null)
   const h3Layer = useRef<import('cesium').CustomDataSource | null>(null)
   const [allH3, setAllH3] = useState(false)
   const selection = useRef<import('cesium').ScreenSpaceEventHandler | null>(null)
@@ -37,10 +41,41 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
         timeline: false, navigationHelpButton: false, fullscreenButton: false,
         sceneModePicker: false, infoBox: false, homeButton: false, selectionIndicator: false,
         requestRenderMode: true,
-        maximumRenderTimeChange: Infinity,
+        maximumRenderTimeChange: 60,
         creditContainer: credits.current!,
       })
       viewer.current = map
+      const ellipsoidTerrain=new Cesium.EllipsoidTerrainProvider()
+      let regionalTerrain:import('cesium').TerrainProvider|undefined
+      const regionalImagery:import('cesium').ImageryLayer[]=[]
+      const updateSurface=()=>{
+        if(map.isDestroyed())return
+        const regional=map.camera.positionCartographic.height<3_000_000 && Math.abs(Cesium.Math.toDegrees(map.camera.positionCartographic.latitude))<75
+        let changed=false
+        for(const layer of regionalImagery)if(layer.show!==regional){layer.show=regional;changed=true}
+        const terrain=regional && regionalTerrain ? regionalTerrain : ellipsoidTerrain
+        if(map.terrainProvider!==terrain){map.terrainProvider=terrain;changed=true}
+        if(changed)map.scene.requestRender()
+      }
+      const stopSurfaceChanged=map.camera.changed.addEventListener(updateSurface)
+      const stopSurfaceEnd=map.camera.moveEnd.addEventListener(updateSurface)
+      const globalBase=new Cesium.WebMapServiceImageryProvider({url:'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi',layers:'BlueMarble_ShadedRelief_Bathymetry',parameters:{format:'image/jpeg',transparent:false},tilingScheme:new Cesium.GeographicTilingScheme(),maximumLevel:8,credit:'NASA GIBS Blue Marble'})
+      map.imageryLayers.add(new Cesium.ImageryLayer(globalBase))
+      updateSurface()
+      map.scene.globe.enableLighting=false
+      map.scene.globe.dynamicAtmosphereLighting=false
+      map.scene.globe.dynamicAtmosphereLightingFromSun=false
+      map.scene.globe.showGroundAtmosphere=true
+      map.scene.globe.depthTestAgainstTerrain=false
+      map.scene.globe.maximumScreenSpaceError=3
+      if(map.scene.skyAtmosphere)map.scene.skyAtmosphere.show=true
+      if(map.scene.skyBox)map.scene.skyBox.show=false
+      if(map.scene.skyAtmosphere){map.scene.skyAtmosphere.brightnessShift=-.15;map.scene.skyAtmosphere.saturationShift=-.1}
+      // Cartographic daylight keeps both hemispheres legible; no artificial night mask.
+      Cesium.TileMapServiceImageryProvider.fromUrl(Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')).then(provider=>{if(!map.isDestroyed()){map.imageryLayers.add(new Cesium.ImageryLayer(provider),0);map.scene.requestRender()}}).catch(()=>{})
+      if(map.scene.moon)map.scene.moon.show=false
+      map.scene.backgroundColor=Cesium.Color.fromCssColorString('#02040a')
+      Cesium.ArcGISTiledElevationTerrainProvider.fromUrl('https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer').then(terrain=>{if(!map.isDestroyed()){regionalTerrain=terrain;updateSurface();map.scene.requestRender()}}).catch(()=>{if(!map.isDestroyed())setError('El terreno 3D no está disponible; se conserva el globo elipsoidal.')})
       // Movimiento suave: ruedas menos agresivas y límite de acercamiento.
       const controller = map.scene.screenSpaceCameraController
       controller.inertiaSpin = 0.78
@@ -65,7 +100,7 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
         'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
       ).then(provider => {
         if (map.isDestroyed()) return
-        map.imageryLayers.add(new Cesium.ImageryLayer(provider))
+        const detailLayer=new Cesium.ImageryLayer(provider);regionalImagery.push(detailLayer);map.imageryLayers.add(detailLayer);updateSurface()
         // Superponemos fronteras y divisiones administrativas en una capa transparente.
         Cesium.ArcGisMapServerImageryProvider.fromUrl(
           'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer',
@@ -73,7 +108,8 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
           if (map.isDestroyed()) return
           const layer = new Cesium.ImageryLayer(boundaries)
           map.imageryLayers.add(layer)
-          layer.alpha = 0.86
+          layer.alpha = 0.65
+          regionalImagery.push(layer);updateSurface()
           map.scene.requestRender()
         }).catch(() => {
           if (!map.isDestroyed()) setError('No fue posible cargar la capa de fronteras; el mapa satelital sigue disponible.')
@@ -87,7 +123,7 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
             .catch(() => { if (!map.isDestroyed()) setError('No se pudo cargar la cartografía terrestre.') })
         }
       })
-      return () => { handler.destroy(); selection.current?.destroy(); selection.current = null; viewer.current = null; firmsLayers.current={}; h3Layer.current=null; map.destroy() }
+      return () => { stopSurfaceChanged();stopSurfaceEnd();handler.destroy(); selection.current?.destroy(); selection.current = null; viewer.current = null; firmsLayers.current={}; densityLayers.current={}; h3Layer.current=null; harmonicPoints.current=null; map.destroy() }
     } catch {
       setError('El globo requiere un navegador con WebGL habilitado.')
     }
@@ -98,8 +134,8 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
     selection.current?.destroy(); selection.current=null
     if (!h3Layer.current) { h3Layer.current=new Cesium.CustomDataSource('harmonization-h3'); void map.dataSources.add(h3Layer.current) }
     const entities=h3Layer.current.entities
-    h3Layer.current.show=!firms
-    if (firms) {map.scene.requestRender(); return}
+    h3Layer.current.show=!firms && showH3
+    if (firms || !showH3) {map.scene.requestRender(); return}
     entities.removeAll()
     setSelected(null)
     // Each pair has its own polygon and source identity. Coincident polygons remain
@@ -120,7 +156,6 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
         polygon: {
           hierarchy: Cesium.Cartesian3.fromDegreesArray(boundary),
           material: cellColor.withAlpha(fire ? .65 : .06),
-          height: 100,
           outline: false,
           outlineColor: Cesium.Color.WHITE.withAlpha(.35),
         },
@@ -135,7 +170,23 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
       map.scene.requestRender()
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
     map.scene.requestRender()
-  }, [rows, active.join(','), allH3, !!firms])
+  }, [rows, active.join(','), allH3, !!firms, showH3])
+  useEffect(()=>{
+    const map=viewer.current
+    if(!map)return
+    if(!harmonicPoints.current){harmonicPoints.current=new Cesium.CustomDataSource('harmonized-Level2-points');void map.dataSources.add(harmonicPoints.current)}
+    const layer=harmonicPoints.current
+    layer.show=!firms && !showH3
+    setSelectedProduct(null)
+    if(!layer.show){map.scene.requestRender();return}
+    layer.entities.removeAll()
+    const lookup=new Map<string,HarmonizedPoint>()
+    for(const product of harmonized){lookup.set(product.id,product);layer.entities.add({id:'harmonized-'+product.id,position:Cesium.Cartesian3.fromDegrees(product.longitude,product.latitude,150),point:{pixelSize:7,color:Cesium.Color.RED,outlineColor:Cesium.Color.WHITE.withAlpha(.65),outlineWidth:1}})}
+    const handler=new Cesium.ScreenSpaceEventHandler(map.scene.canvas)
+    handler.setInputAction((e:{position:import('cesium').Cartesian2})=>{const id=map.scene.pick(e.position)?.id?.id;setSelectedProduct(typeof id==='string'?lookup.get(id.replace('harmonized-',''))??null:null)},Cesium.ScreenSpaceEventType.LEFT_CLICK)
+    map.scene.requestRender()
+    return()=>handler.destroy()
+  },[harmonized,!!firms,showH3])
   useEffect(() => {
     if (!focusPoint || !viewer.current || viewer.current.isDestroyed()) return
     const height = focusPoint.kind === 'country' ? 2_200_000 : focusPoint.kind === 'state' ? 550_000 : 105_000
@@ -147,8 +198,8 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
   useEffect(() => {
     const map = viewer.current
     if (!map) return
-    for(const [sensor,layer] of Object.entries(firmsLayers.current)) layer!.show=!!firms && sensor===firms.sensor
-    if(h3Layer.current) h3Layer.current.show=!firms
+    for(const [sensor,layer] of Object.entries(densityLayers.current))if(layer)layer.show=!!firms && firms.sensor===sensor && displayMode==='density'
+    setLayerVisibility({...firmsLayers.current,h3:h3Layer.current??undefined,harmonized:harmonicPoints.current??undefined},firms?firms.sensor:showH3?'h3':'harmonized')
     map.scene.requestRender()
     if (!firms) return
     if (!firms.valid || !firms.start || !firms.end || firms.start > firms.end || (Date.parse(firms.end)-Date.parse(firms.start))/86400000 > 30) { if(firmsLayers.current[firms.sensor])firmsLayers.current[firms.sensor]!.show=false;map.scene.requestRender();setFirmsStatus('Selecciona un rango válido de hasta 31 días.'); return }
@@ -180,17 +231,24 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
       map.scene.requestRender()
       const cached=responseCache.current.get(cacheKey)
       const request=cached && cached.expires>Date.now() ? Promise.resolve(cached.data) : apiGet<{ retrieval?: string[]; mode?: string; status: string; count: number; results: { count?: number; id: number; latitude: number; longitude: number; original: Record<string, unknown>; source: string; satellite: string; observed_at: string }[] }>('/v1/detections/?' + params, signal)
-      request.then(page => {
+      request.then(async page => {
         if (signal.aborted || map.isDestroyed()) return
         if (!page.status.includes('ERROR')) responseCache.current.set(cacheKey,{data:page,expires:Date.now()+120000})
         if(responseCache.current.size>12) responseCache.current.delete(responseCache.current.keys().next().value!)
         layer!.show=true
         layer!.entities.removeAll()
-        if (density) layer!.entities.add({id:'density',rectangle:{coordinates:Cesium.Rectangle.MAX_VALUE,material:new Cesium.ImageMaterialProperty({image:densityImage(page.results,page.cell_degrees ?? 1),transparent:true}),height:50}})
+        if (density) {
+          const provider=await Cesium.SingleTileImageryProvider.fromUrl(densityImage(page.results,page.cell_degrees ?? 1),{rectangle:Cesium.Rectangle.MAX_VALUE})
+          if(signal.aborted || map.isDestroyed())return
+          const previous=densityLayers.current[firms.sensor]
+          if(previous)map.imageryLayers.remove(previous,true)
+          const overlay=new Cesium.ImageryLayer(provider);overlay.alpha=.85
+          densityLayers.current[firms.sensor]=overlay;map.imageryLayers.add(overlay)
+        }
         for (const [index, row] of (density ? [] : page.results).entries()) {
           const grouped=page.mode==='aggregated'
-          const entity=layer!.entities.add({id:(grouped?'aggregate-':'firms-')+(grouped?index:row.id),position:Cesium.Cartesian3.fromDegrees(row.longitude,row.latitude),properties:{...row.original,sensor:firms.sensor,satellite:row.satellite,source:row.source,observed_at:row.observed_at,count:row.count??1,latitude:row.latitude,longitude:row.longitude,magnitude:grouped?'Cantidad de detecciones por celda geográfica':'Detección térmica individual'}})
-          entity.point=new Cesium.PointGraphics({pixelSize:grouped?10:6,color:firms.sensor==='modis'?Cesium.Color.ORANGERED:Cesium.Color.CRIMSON,outlineColor:Cesium.Color.WHITE,outlineWidth:1})
+          const entity=layer!.entities.add({id:(grouped?'aggregate-':'firms-')+(grouped?index:row.id),position:Cesium.Cartesian3.fromDegrees(row.longitude,row.latitude,150),properties:{...row.original,sensor:firms.sensor,satellite:row.satellite,source:row.source,observed_at:row.observed_at,count:row.count??1,latitude:row.latitude,longitude:row.longitude,magnitude:grouped?'Cantidad de detecciones por celda geográfica':'Detección térmica individual'}})
+          entity.point=new Cesium.PointGraphics({pixelSize:grouped?10:6,color:Cesium.Color.RED,outlineColor:Cesium.Color.WHITE,outlineWidth:1})
         }
         setFirmsStatus(page.status.replaceAll('_',' ') + ' / ' + page.results.length + (page.mode === 'aggregated' ? ' grupos / ' : ' puntos / ') + page.count + ' detecciones' + (page.count > 5000 ? '. Vista parcial: busca en un área menor para consultar más detalle.' : ''))
         map.scene.requestRender()
@@ -203,7 +261,7 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
     load()
     return () => { controller?.abort(); handler.destroy(); /* Layers persist across tabs; Viewer owns their destruction. */ }
-  }, [firms?.start, firms?.end, firms?.sensor, firms?.satellite, firms?.region, focusPoint, searchArea, searchId, displayMode, firms?.valid])
+  }, [firms?.start, firms?.end, firms?.sensor, firms?.satellite, firms?.region, focusPoint, searchArea, searchId, displayMode, firms?.valid, showH3])
   useEffect(() => {
     const map=viewer.current
     if(!map || !drawing) return
@@ -225,7 +283,7 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
       const end=pick(e.endPosition)
       if(!origin || !end) return
       bounds=Cesium.Rectangle.fromCartographicArray([origin,end])
-      if(!shape) shape=map.entities.add({rectangle:{coordinates:new Cesium.CallbackProperty(()=>bounds,false),material:Cesium.Color.CYAN.withAlpha(.15),outline:true,outlineColor:Cesium.Color.CYAN,height:100}})
+      if(!shape) shape=map.entities.add({rectangle:{height:0,coordinates:new Cesium.CallbackProperty(()=>bounds,false),material:Cesium.Color.CYAN.withAlpha(.15),outline:true,outlineColor:Cesium.Color.CYAN}})
       map.scene.requestRender()
     },Cesium.ScreenSpaceEventType.MOUSE_MOVE)
     handler.setInputAction(()=>{
@@ -240,18 +298,20 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
   },[drawing, !!firms])
   return <div className="globe-shell"><section className="map" aria-label="Globo terrestre interactivo">
     {firms && detection && <aside className="cell-detail"><button onClick={() => setDetection(null)}>Cerrar</button><h3>Detección NASA FIRMS</h3><dl>{Object.entries(detection).map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{String(value ?? 'Desconocido')}</dd></div>)}</dl></aside>}
+    {!firms && !showH3 && selectedProduct && <aside className="cell-detail"><button onClick={()=>setSelectedProduct(null)}>Cerrar</button><h3>{selectedProduct.product==='FIRMS_OPERATIONAL'?'Integraci\u00f3n operativa FIRMS':'Detecci\u00f3n armonizada Level 2'}</h3>{(selectedProduct.represented_count??1)>1 && <p>Agrupación: {selectedProduct.represented_count} resultados; se muestra una observación original representativa. Selecciona un área menor para consultar todos.</p>}<p>{selectedProduct.status} · {selectedProduct.observed_at}</p><p>{selectedProduct.method} / {selectedProduct.version}</p><p>Posición: centro del píxel original {selectedProduct.modis_count ? 'MODIS' : 'VIIRS'}. Asociación exploratoria.</p>{selectedProduct.members.map(({pixel})=><div key={pixel.id}><h4>{pixel.sensor} · {pixel.platform}</h4><p>{pixel.granule}{pixel.row!==null && <> · fila {pixel.row}, columna {pixel.column}</>}</p><p>{pixel.latitude}, {pixel.longitude} · {pixel.observed_at}{pixel.fire_class!==null && <> · clase {pixel.fire_class}</>}</p>{pixel.h3_r7 && <p>H3 r7: {pixel.h3_r7}</p>}<pre>{JSON.stringify(pixel.qa,null,2)}</pre></div>)}<details><summary>Evaluación de asociación</summary><pre>{JSON.stringify(selectedProduct.assessment,null,2)}</pre></details></aside>}
     <div ref={container} className="globe" />
     <div className="map-credits" ref={credits} aria-label="Créditos de los proveedores cartográficos" />
     <div className="map-actions">
-      {!firms && <><label>Observaciones <select value={allH3?'all':'fire'} onChange={e=>setAllH3(e.target.value==='all')}><option value="fire">Detecciones con fuego</option><option value="all">Todas las observaciones H3</option></select></label><button disabled={!rows.length} onClick={()=>{const positions=rows.filter(r=>allH3 || ['AMBOS','SOLO_MODIS','SOLO_VIIRS'].includes(r.coincidencia_qa)).map(r=>{const [lat,lon]=cellToLatLng(r.celda_h3);return Cesium.Cartesian3.fromDegrees(lon,lat)});if(positions.length)viewer.current?.camera.flyTo({destination:Cesium.Rectangle.fromCartesianArray(positions)})}}>Ver observaciones</button></>}
+      {!firms && <label>Visualización <select value={showH3?'h3':'points'} onChange={e=>onShowH3?.(e.target.value==='h3')}><option value="points">Detecciones armonizadas</option><option value="h3">Análisis H3</option></select></label>}
+      {!firms && showH3 && <><label>Observaciones <select value={allH3?'all':'fire'} onChange={e=>setAllH3(e.target.value==='all')}><option value="fire">Detecciones con fuego</option><option value="all">Todas las observaciones H3</option></select></label><button disabled={!rows.length} onClick={()=>{const positions=rows.filter(r=>allH3 || ['AMBOS','SOLO_MODIS','SOLO_VIIRS'].includes(r.coincidencia_qa)).map(r=>{const [lat,lon]=cellToLatLng(r.celda_h3);return Cesium.Cartesian3.fromDegrees(lon,lat)});if(positions.length)viewer.current?.camera.flyTo({destination:Cesium.Rectangle.fromCartesianArray(positions)})}}>Ver observaciones</button></>}
 
       {firms && <><label>Vista <select aria-label="Representación FIRMS" value={displayMode} onChange={e=>setDisplayMode(e.target.value)}><option value="density">Densidad</option><option value="points">Detecciones individuales</option></select></label></>}
       {<><button aria-pressed={drawing} onClick={()=>setDrawing(v=>!v)}>{drawing?'Cancelar selección':'Seleccionar área'}</button>{searchArea && <button onClick={()=>{setSearchArea(null);onAreaSelected?.('');setSearchId(n=>n+1)}}>Limpiar área</button>}</>}
-      <button onClick={() => viewer.current?.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(-102, 20, 17_000_000) })}>Vista mundial</button>
-      {firms && <button onClick={() => { const r = viewer.current?.camera.computeViewRectangle(); if (r) { const bbox=[r.west,r.south,r.east,r.north].map(Cesium.Math.toDegrees).join(',');setSearchArea(bbox);onAreaSelected?.(bbox); setSearchId(n => n+1) } }}>Buscar en esta área</button>}
+      <button onClick={() => {setSearchArea(null);onWorld?.();viewer.current?.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(-102, 20, 17_000_000) })}}>Vista mundial</button>
+      {<button onClick={() => { const r = viewer.current?.camera.computeViewRectangle(); if (r) { const bbox=[r.west,r.south,r.east,r.north].map(Cesium.Math.toDegrees).join(',');setSearchArea(bbox);onAreaSelected?.(bbox); setSearchId(n => n+1) } }}>Buscar en esta área</button>}
 
     </div>
-    {error && <p className="map-error" role="status">{error}</p>}
+
     <div className="map-coordinate-display" aria-live="off">
       <span>COORDENADAS</span>
       <strong>{(pointerCoords ?? (focusPoint ? {lat:focusPoint.lat,lon:focusPoint.lon} : null))
@@ -259,7 +319,7 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
         : 'Mueve el cursor sobre el mapa'}</strong>
       <small>{pointerCoords ? 'Posición del cursor · WGS84' : focusPoint ? `Centro de ${focusPoint.name} · WGS84` : 'Sistema WGS84'}</small>
     </div>
-    <div className="legend">{firms ? 'FIRMS · amarillo–rojo: cantidad por celda, intensidad relativa. No representa área quemada ni temperatura.' : 'QA ? AMBOS rojo / SOLO_MODIS naranja / SOLO_VIIRS azul / NINGUNO verde / NO_EVALUABLE gris'}</div>
+
     {!firms && selected && <aside className="cell-detail" aria-label="Detalle de celda H3">
       <button onClick={() => setSelected(null)} aria-label="Cerrar detalle">Cerrar</button>
       <h3>{selected.celda_h3}</h3><p>Indicador del centro de una celda H3 agregada; no es una coordenada individual de incendio.</p>
@@ -275,5 +335,5 @@ export default function Globe({ rows, active, focusPoint, firms, onAreaSelected 
         <dt>Original / después de QA</dt><dd>{row.coincidencia_original} / {row.coincidencia_qa}</dd></dl>
       </div>)}
     </aside>}
-  </section>{firms && <div className="firms-status" role="status">{firms.sensor.toUpperCase()} · {firms.start} — {firms.end} UTC · Área: {searchArea || focusPoint?.name || 'Mundo'} · {firmsStatus}</div>}</div>
+  </section>    <div className="map-legend">{firms ? displayMode==='density' ? 'FIRMS · amarillo–rojo: cantidad por celda, intensidad relativa. No representa área quemada ni temperatura.' : 'Detecciones térmicas FIRMS individuales; consulta atributos al seleccionar.' : !showH3 ? operational ? 'Rojo: integraci\u00f3n FIRMS mundial; agrupaci\u00f3n al alejarse, detalle al seleccionar un \u00e1rea. No equivale al producto Level 2.' : 'Rojo: producto Level 2 unificado, con asociaciones y detecciones exclusivas. Procedencia al seleccionar.' : 'QA · AMBOS rojo / SOLO_MODIS naranja / SOLO_VIIRS azul / NINGUNO verde / NO_EVALUABLE gris'}</div>{error && <p className="firms-status" role="status">{error}</p>}{firms && <div className="firms-status" role="status">{firms.sensor.toUpperCase()} · {firms.start} — {firms.end} UTC · Área: {searchArea || focusPoint?.name || 'Mundo'} · {firmsStatus}</div>}</div>
 }

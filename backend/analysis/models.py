@@ -140,3 +140,75 @@ class HarmonizationRun(models.Model):
     records = models.PositiveIntegerField(default=0)
     error_type = models.CharField(max_length=100, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class FIRMSHarmonizationJob(models.Model):
+    date = models.DateField()
+    version = models.CharField(max_length=60, default='firms_operational_v1')
+    status = models.CharField(max_length=30, default='PENDIENTE')
+    modis_count = models.PositiveIntegerField(default=0)
+    viirs_count = models.PositiveIntegerField(default=0)
+    records = models.PositiveIntegerField(default=0)
+    metadata = models.JSONField(default=dict)
+    error = models.CharField(max_length=100, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['date','version'], name='unique_firms_harmonization_day')]
+
+
+class FIRMSUnifiedDetection(models.Model):
+    id = models.CharField(primary_key=True, max_length=64)
+    job = models.ForeignKey(FIRMSHarmonizationJob, on_delete=models.PROTECT, related_name='detections')
+    representative = models.ForeignKey(FireDetection, on_delete=models.PROTECT, related_name='operational_anchors')
+    members = models.ManyToManyField(FireDetection, related_name='operational_products')
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    observed_at = models.DateTimeField(db_index=True)
+    status = models.CharField(max_length=20)
+    modis_count = models.PositiveIntegerField()
+    viirs_count = models.PositiveIntegerField()
+    metadata = models.JSONField(default=dict)
+    class Meta:
+        indexes = [models.Index(fields=['latitude','longitude'], name='firms_unified_location')]
+
+
+class Level2FirePixel(models.Model):
+    h3_r7 = models.CharField(max_length=16,db_index=True,default='')
+    id = models.CharField(primary_key=True,max_length=64)
+    sensor = models.CharField(max_length=10)
+    platform = models.CharField(max_length=30)
+    granule = models.CharField(max_length=100)
+    source_file = models.CharField(max_length=200)
+    row = models.PositiveIntegerField()
+    column = models.PositiveIntegerField()
+    observed_at = models.DateTimeField(db_index=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    fire_class = models.PositiveSmallIntegerField()
+    qa = models.JSONField(default=dict)
+    provenance = models.JSONField(default=dict)
+
+class HarmonizedDetection(models.Model):
+    canonical_key = models.CharField(max_length=64,db_index=True,default='')
+    id = models.CharField(primary_key=True,max_length=64)
+    pair = models.ForeignKey(OverpassPair,on_delete=models.PROTECT)
+    version = models.CharField(max_length=150)
+    method = models.CharField(max_length=100)
+    status = models.CharField(max_length=30)
+    representative = models.ForeignKey(Level2FirePixel,on_delete=models.PROTECT)
+    observed_at = models.DateTimeField(db_index=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    h3 = models.CharField(max_length=16)
+    modis_count = models.PositiveIntegerField()
+    viirs_count = models.PositiveIntegerField()
+    assessment = models.JSONField(default=dict)
+    class Meta:
+        indexes = [models.Index(fields=['version','observed_at'],name='harm_pixel_version_time'),models.Index(fields=['latitude','longitude'],name='harm_pixel_coordinates')]
+
+class HarmonizedDetectionMember(models.Model):
+    detection = models.ForeignKey(HarmonizedDetection,on_delete=models.CASCADE,related_name='members')
+    pixel = models.ForeignKey(Level2FirePixel,on_delete=models.PROTECT)
+    pair = models.ForeignKey(OverpassPair,on_delete=models.PROTECT)
+    version = models.CharField(max_length=150)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['pixel','pair','version'],name='one_pixel_per_pair_version')]

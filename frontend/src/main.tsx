@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-quer
 import Globe from './Globe'
 import ScientificJobs from './ScientificJobs'
 import LocationSearch, { type Place } from './LocationSearch'
-import { apiGet, comparable, fetchCellsRange, fetchRegions, fetchDates, sensors, summarize, type Cell } from './data'
+import { apiGet, fetchOperationalPoints, fetchHarmonizedPoints, comparable, fetchCellsRange, fetchRegions, fetchDates, sensors, summarize, type Cell, type PixelCatalog } from './data'
 import './style.css'
 
 const tabs = ['MODIS', 'VIIRS', 'Armonización'] as const
@@ -19,6 +19,11 @@ const unique = (values: string[]) => [...new Set(values.filter(Boolean))].sort()
 
 function App() {
   const periods=useRef<Record<string,{start:string;end:string}>>({})
+  const [showH3,setShowH3]=useState(false)
+  const [operational,setOperational]=useState(true)
+  const operationalJobs=useQuery({queryKey:['operational-jobs'],queryFn:({signal})=>apiGet<{date:string;status:string}[]>('/v1/harmonized-detections/jobs/',signal),refetchInterval:10000})
+  const [productVersion,setProductVersion]=useState('')
+  const pointCatalog=useQuery({queryKey:['pixel-catalog'],queryFn:({signal})=>apiGet<PixelCatalog>('/v1/harmonization/detections/catalog/',signal),refetchInterval:10000})
   const [scientificArea,setScientificArea]=useState('')
   const [tab, setTab] = useState<typeof tabs[number]>('MODIS')
   const [startDate, setStartDate] = useState('2024-04-16')
@@ -38,7 +43,7 @@ function App() {
   const datesQuery = useQuery({ queryKey: ['dates', globalFirms, sensor, region], queryFn: ({ signal }) => globalFirms ? apiGet<{dates:string[]}>('/v1/detections/dates/?sensor=' + sensor, signal) : fetchDates(region, signal), enabled: true, retry: false })
   const processedDates=useQuery({queryKey:['processed-dates'],queryFn:({signal})=>fetchDates('',signal)})
   const harmonyInitialized=useRef(false)
-  useEffect(()=>{if(!globalFirms && !harmonyInitialized.current && processedDates.data?.dates.length){const latest=[...processedDates.data.dates].sort().at(-1)!;setStartDate(latest);setEndDate(latest);harmonyInitialized.current=true}},[globalFirms,processedDates.data])
+  useEffect(()=>{const dates=operational ? operationalJobs.data?.filter(j=>j.status==='COMPLETADO').map(j=>j.date) : pointCatalog.data?.dates.length ? pointCatalog.data.dates : processedDates.data?.dates;if(!globalFirms && !harmonyInitialized.current && (operational?operationalJobs.data:pointCatalog.data) && dates?.length){const latest=[...dates].sort().at(-1)!;setStartDate(latest);setEndDate(latest);harmonyInitialized.current=true}},[globalFirms,processedDates.data,pointCatalog.data,operational,operationalJobs.data])
   const switchTab=(next:typeof tabs[number])=>{periods.current[tab]={start:startDate,end:endDate};const saved=periods.current[next] ?? (next!=='Armonización' ? periods.current['MODIS'] ?? periods.current['VIIRS'] : undefined);if(saved){setStartDate(saved.start);setEndDate(saved.end)}setTab(next);setSatellite('')}
   const [selectedCountry, setSelectedCountry] = useState<Place | null>(null)
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
@@ -54,12 +59,17 @@ function App() {
     : startDate > endDate ? 'La fecha inicial debe ser anterior o igual a la fecha final.'
     : (Date.parse(endDate + 'T00:00:00Z') - Date.parse(startDate + 'T00:00:00Z')) / 86400000 >= 31
       ? 'Selecciona un rango máximo de 31 días para evitar consultas excesivas a la API.' : ''
-  const harmonyBBox=scientificArea || (selectedCity?.bbox ?? selectedPlace?.bbox ?? selectedCountry?.bbox)?.join(',') || ''
+  const selectedLocation=selectedCity ?? selectedPlace ?? selectedCountry
+  const locationBounds=selectedLocation?.bbox ?? (selectedLocation ? [((selectedLocation.lon-.5+540)%360)-180,Math.max(-90,selectedLocation.lat-.5),((selectedLocation.lon+.5+540)%360)-180,Math.min(90,selectedLocation.lat+.5)] : undefined)
+  const harmonyBBox=scientificArea || locationBounds?.join(',') || ''
   const query = useQuery({
     queryKey: ['cells-range', startDate, endDate, region, version, harmonyBBox],
     queryFn: ({ signal }) => fetchCellsRange(startDate, endDate, region, signal, version, harmonyBBox),
-    enabled: !globalFirms && !dateRangeError, refetchInterval: globalFirms ? false : 10000, retry: false, staleTime: 60_000,
+    enabled: !globalFirms && showH3 && !dateRangeError, refetchInterval: globalFirms || !showH3 ? false : 10000, retry: false, staleTime: 60_000,
   })
+  const pointsQuery=useQuery({queryKey:['harmonized-points',startDate,endDate,harmonyBBox,productVersion],queryFn:({signal})=>fetchHarmonizedPoints(startDate,endDate,harmonyBBox,productVersion,signal),enabled:!globalFirms && !operational && !dateRangeError,refetchInterval:10000,retry:false})
+  const operationalQuery=useQuery({queryKey:['operational-points',startDate,endDate,harmonyBBox],queryFn:({signal})=>fetchOperationalPoints(startDate,endDate,harmonyBBox,signal),enabled:!globalFirms && operational && !dateRangeError,refetchInterval:q=>q.state.data?.missing_dates.length ? 10000 : false,staleTime:120000,retry:false})
+  const pointRows=operational ? operationalQuery.data?.results ?? [] : pointsQuery.data ?? []
   const rows = globalFirms || dateRangeError ? empty : query.data ?? empty
   const countries = useMemo(() => unique(rows.map(row => row.pais ?? '')), [rows])
   const regions = useMemo(() => unique(rows.filter(row => !country || row.pais === country).map(row => row.estado ?? '')), [rows, country])
@@ -75,11 +85,7 @@ function App() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [menuOpen])
   const hasObservations = visible.length > 0
-  const status = dateRangeError || (globalFirms ? '' :
-    (query.isFetching && !query.data ? 'Consultando el lote en Django…'
-    : query.isError ? 'No se pudo cargar el lote. ' + (query.error instanceof Error ? query.error.message : '')
-    : query.data === null ? 'La API no tiene lotes para el rango seleccionado.'
-    : !hasObservations ? 'No hay observaciones armonizadas para este período.' : ''))
+  const status = dateRangeError || (!globalFirms && operational && !showH3 ? operationalQuery.isError ? 'Error consultando la integraci\u00f3n mundial FIRMS.' : operationalQuery.isFetching ? 'Cargando producto operativo mundial...' : operationalQuery.data?.missing_dates.length ? 'Hay fechas pendientes de sincronizaci\u00f3n mundial. Solicita el trabajo o ejecuta harmonize_firms.' : !operationalQuery.data?.count ? 'Sin detecciones para este per\u00edodo y \u00e1rea.' : '' : '') || (globalFirms || (operational && !showH3) ? '' : !showH3 ? (pointsQuery.isError ? 'Error consultando el producto armonizado.' : pointsQuery.isFetching ? 'Cargando detecciones armonizadas Level 2…' : !pointsQuery.data?.length ? 'No hay detecciones armonizadas procesadas para este período y área.' : '') : (query.isError ? 'Error consultando el análisis H3.' : query.isFetching ? 'Cargando análisis H3…' : !visible.length ? 'No hay observaciones H3 para este período.' : ''))
   const source = sensors.map(sensor => {
     const passes = unique(visible.map(row => row[`${sensor}_sobrevuelo`]))
     return passes.length ? labels[sensor] + ' ' + passes.join(', ') : ''
@@ -115,17 +121,17 @@ function App() {
         </button>
       )}</nav>
       <div className="heading"><div><h1>{tab === 'MODIS' ? 'Observación satelital' : tab === 'VIIRS' ? 'Observaciones VIIRS' : 'Armonización MODIS–VIIRS'}</h1>
-      <p>{tab === 'MODIS' ? 'Detecciones térmicas NASA FIRMS · Terra y Aqua' : tab === 'VIIRS' ? 'Detecciones mundiales NASA FIRMS · Suomi NPP' : 'Comparación exploratoria de observaciones MODIS y VIIRS sobre celdas H3 · Resolución 7'}</p></div></div>
+      <p>{tab === 'MODIS' ? 'Detecciones térmicas NASA FIRMS · Terra y Aqua' : tab === 'VIIRS' ? 'Detecciones mundiales NASA FIRMS · Suomi NPP' : operational ? 'Integraci\u00f3n mundial MODIS + VIIRS \u00b7 FIRMS, asociaciones exploratorias' : 'Armonizaci\u00f3n cient\u00edfica Level 2 \u00b7 Cobertura procesada parcial'}</p></div></div>
       <section aria-label="Filtros de observación" className="filters">
-        {!globalFirms && <label>Versión científica<select value={version} onChange={e => setVersion(e.target.value)}>{[...new Set([version,...(runsQuery.data ?? []).map(r => r.version)])].map(v => <option key={v}>{v}</option>)}</select></label>}
+        {!globalFirms && showH3 && <label>Versión científica<select value={version} onChange={e => setVersion(e.target.value)}>{[...new Set([version,...(runsQuery.data ?? []).map(r => r.version)])].map(v => <option key={v}>{v}</option>)}</select></label>}
         {globalFirms && <label>Satélite<select value={satellite} onChange={e => setSatellite(e.target.value)}><option value="">Todos</option>{(sensor === 'modis' ? ['aqua','terra'] : ['snpp']).map(value => <option key={value} value={value}>{value.toUpperCase()}</option>)}</select></label>}
 
         <div className="date-range" role="group" aria-label="Rango de fechas UTC">
-          <label>Desde (UTC)<input type="date" value={startDate} min={globalFirms ? available?.min_date : undefined} max={globalFirms ? available?.max_date : endDate || undefined} onChange={event => { setStartDate(event.target.value); setCountry('') }} /></label>
-          <label>Hasta (UTC)<input type="date" value={endDate} min={globalFirms ? available?.min_date : startDate || undefined} max={globalFirms ? available?.max_date : undefined} onChange={event => { setEndDate(event.target.value); setCountry('') }} /></label>
+          <label>Desde (UTC)<input type="date" value={startDate} min={globalFirms ? available?.min_date : undefined} max={globalFirms ? available?.max_date : endDate || undefined} onChange={event => { if(!globalFirms)harmonyInitialized.current=true; setStartDate(event.target.value); setCountry('') }} /></label>
+          <label>Hasta (UTC)<input type="date" value={endDate} min={globalFirms ? available?.min_date : startDate || undefined} max={globalFirms ? available?.max_date : undefined} onChange={event => { if(!globalFirms)harmonyInitialized.current=true; setEndDate(event.target.value); setCountry('') }} /></label>
         </div>
         <LocationSearch kind="country" label="País" placeholder="Escribe un país…" value={selectedCountry} onSelect={place => {
-          setRegion(''); setSelectedCountry(place); setSelectedPlace(null); setSelectedCity(null)
+          setScientificArea(''); setRegion(''); setSelectedCountry(place); setSelectedPlace(null); setSelectedCity(null)
           // Solo filtramos la tabla si la API conoce el país por ese nombre;
           // la búsqueda cartográfica funciona incluso si no hay lotes disponibles.
           const match = place && countries.find(name => name.toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g, '') === place.name.toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
@@ -133,12 +139,12 @@ function App() {
         }} />
         <LocationSearch kind="state" label="Estado / provincia" placeholder={selectedCountry ? 'Elige o escribe un estado…' : 'Selecciona un país'}
           disabled={!selectedCountry?.countryCode} countryCode={selectedCountry?.countryCode} value={selectedPlace} onSelect={place => {
-            setRegion(''); setSelectedPlace(place); setSelectedCity(null)
+            setScientificArea(''); setRegion(''); setSelectedPlace(place); setSelectedCity(null)
             const match = place && regions.find(name => name.toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g, '') === place.name.toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
             void match
           }} />
         <LocationSearch kind="city" label="Ciudad / municipio" placeholder={!selectedCountry ? 'Selecciona un país' : !selectedPlace ? 'Selecciona un estado' : 'Elige o escribe una ciudad…'}
-          disabled={!selectedCountry?.countryCode || !selectedPlace} countryCode={selectedCountry?.countryCode} stateName={selectedPlace?.name} stateBounds={selectedPlace?.bbox} value={selectedCity} onSelect={setSelectedCity} />
+          disabled={!selectedCountry?.countryCode || !selectedPlace} countryCode={selectedCountry?.countryCode} stateName={selectedPlace?.name} stateBounds={selectedPlace?.bbox} value={selectedCity} onSelect={place=>{setScientificArea('');setSelectedCity(place)}} />
       </section>
       {globalFirms && available && <div className="nasa-availability"><span>{sensor.toUpperCase()} · UTC · {available.min_date} — {available.max_date}</span>{[1,7].map(days => <button key={days} onClick={() => { const end=available.max_date; setEndDate(end); setStartDate(new Date(Date.parse(end+'T00:00:00Z')-(days-1)*86400000).toISOString().slice(0,10)) }}>{days===1 ? 'Últimas 24 horas disponibles' : 'Últimos 7 días disponibles'}</button>)}</div>}
       {availabilityQuery.isError && <p role="alert">Disponibilidad NASA no verificable; no se asumen límites.</p>}
@@ -146,8 +152,9 @@ function App() {
       {regionQuery.isError && <p role="alert">No se pudieron cargar las regiones de PostgreSQL.</p>}
       {status && <div className="status" role="status">{status} {query.isError && <button onClick={() => void query.refetch()}>Reintentar</button>}</div>}
 
+      {!globalFirms && !showH3 && <div className="nasa-availability"><label>Producto <select aria-label="Producto armonizado" value={operational?'operational':'level2'} onChange={e=>setOperational(e.target.value==='operational')}><option value="operational">Integración mundial FIRMS</option><option value="level2">Armonización científica Level 2</option></select></label>{!operational && <label>Versión <select value={productVersion} onChange={e=>setProductVersion(e.target.value)}><option value="">Unificado sin duplicados de reprocesamiento</option>{pointCatalog.data?.versions.map(v=><option key={v.version}>{v.version}</option>)}</select></label>}<span>{operational ? operationalQuery.data?.count??0 : pointsQuery.data?.length??0} detecciones armonizadas</span></div>}
       <div className="dashboard map-view">
-        <Globe onAreaSelected={setScientificArea} firms={globalFirms ? { start: startDate, end: endDate, sensor, satellite, region, valid: !dateRangeError } : undefined} focusPoint={selectedCity ?? selectedPlace ?? selectedCountry} rows={globalFirms ? empty : visible} active={tab === 'MODIS' ? ['modis'] : tab === 'VIIRS' ? ['viirs'] : [...sensors]} />
+        <Globe onWorld={()=>{setScientificArea('');setSelectedCountry(null);setSelectedPlace(null);setSelectedCity(null)}} operational={operational} harmonized={pointRows} showH3={showH3} onShowH3={setShowH3} onAreaSelected={setScientificArea} firms={globalFirms ? { start: startDate, end: endDate, sensor, satellite, region, valid: !dateRangeError } : undefined} focusPoint={selectedCity ?? selectedPlace ?? selectedCountry} rows={globalFirms ? empty : visible} active={tab === 'MODIS' ? ['modis'] : tab === 'VIIRS' ? ['viirs'] : [...sensors]} />
         {false && <aside className="sensor-panel" aria-label="Observaciones por sensor">
           <h2>{tab === 'MODIS' ? 'Resumen de observación' : 'Productos y calidad por sensor'}</h2>
           <div className="cards">{sensors.map(sensor => {
@@ -164,15 +171,16 @@ function App() {
           <p className="note">Los poligonos representan celdas H3, no perimetros de incendios. Una celda puede contener varios píxeles de fuego.</p>
         </aside>}
       </div>
-      {!globalFirms && <section className="below-map" aria-label="Resumen de armonización">
+      {!globalFirms && showH3 && <section className="below-map" aria-label="Resumen de armonización">
         {visible.length>0 && !visible.some(r=>['AMBOS','SOLO_MODIS','SOLO_VIIRS'].includes(r.coincidencia_qa)) && <p className="note">Hay observaciones procesadas, pero ninguna detección evaluable positiva en esta selección. Usa Todas las observaciones H3 para revisar la cobertura y QA.</p>}
-        <h2>Armonización experimental ? {version}</h2>
-        <div className="selection-summary"><div><span>Observaciones</span><strong>{visible.length}</strong></div><div><span>Evaluables</span><strong>{visible.filter(r=>r.coincidencia_original!=='NO_EVALUABLE').length}</strong></div><div><span>Regiones</span><strong>{unique(visible.map(r=>r.region_nombre)).join(', ') || 'Sin resultados'}</strong></div><div><span>UTC</span><strong>{startDate} ? {endDate}</strong></div></div>
+        <h2>Armonización experimental · {version}</h2>
+        <div className="selection-summary"><div><span>Observaciones</span><strong>{visible.length}</strong></div><div><span>Evaluables</span><strong>{visible.filter(r=>r.coincidencia_original!=='NO_EVALUABLE').length}</strong></div><div><span>Regiones</span><strong>{unique(visible.map(r=>r.region_nombre)).join(', ') || 'Sin resultados'}</strong></div><div><span>UTC</span><strong>{startDate} — {endDate}</strong></div></div>
         <div className="metrics">{comparableCounts.map(item=><div key={item.label}><span>{item.label}</span> <strong>{item.value}</strong></div>)}</div>
         <p className="note">Selecciona una celda para consultar QA, tiempos, cobertura y sobrevuelos. Los hexágonos H3 no representan perímetros de incendios.</p>
       </section>}
-      {!globalFirms && <ScientificJobs date={startDate} bbox={scientificArea || (selectedCity?.bbox ?? selectedPlace?.bbox ?? selectedCountry?.bbox)?.join(',') || ''} onResults={(date,version)=>{setStartDate(date);setEndDate(date);setVersion(version);setScientificArea('');setSelectedCountry(null);setSelectedPlace(null);setSelectedCity(null)}}/>}
-      <footer>TerraFlare © {new Date().getFullYear()} ? Datos: <a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noreferrer">NASA FIRMS</a> / <a href="https://www.earthdata.nasa.gov/" target="_blank" rel="noreferrer">Earthdata</a>. Plataforma independiente; no es un producto oficial de NASA.</footer>
+      {!globalFirms && !showH3 && <section className="below-map" aria-label="Resumen de detecciones armonizadas"><span>{startDate} — {endDate} UTC · {operational ? operationalQuery.data?.count??0 : pointRows.length} resultados · {selectedLocation?.name || scientificArea || 'Mundo'} · {operational ? 'Integración operativa FIRMS mundial' : 'Level 2; cobertura procesada parcial'}</span><div className="metrics">{['ASOCIADA','SOLO_MODIS','SOLO_VIIRS',...(!operational?['SIN_COMPARABILIDAD']:[])].map(status=><span key={status}>{status}: {operational ? operationalQuery.data?.counts[status]??0 : pointRows.filter(p=>p.status===status).length}</span>)}</div><p className="note">{operational ? `Asociaciones exploratorias FIRMS: 1.500 m / 15 min, dentro de cada día UTC. Sin QA Level 2 ni cobertura compartida evaluada. ${operationalQuery.data?.mode==='aggregated' ? 'Vista mundial agrupada; cada punto usa una observación original representativa. Selecciona un área para ver el detalle.' : ''}` : 'Asociaciones Level 2 exploratorias. Cada punto utiliza un centro de píxel original.'}</p></section>}
+      {!globalFirms && <ScientificJobs operational={operational && !showH3} date={startDate} bbox={harmonyBBox} onResults={(date,version)=>{setStartDate(date);setEndDate(date);setVersion(version);setOperational(false);setProductVersion('pixel_assoc_v1__'+version);setShowH3(false);setScientificArea('');setSelectedCountry(null);setSelectedPlace(null);setSelectedCity(null)}}/>}
+      <footer>TerraFlare © {new Date().getFullYear()} · Datos: <a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noreferrer">NASA FIRMS</a> / <a href="https://www.earthdata.nasa.gov/" target="_blank" rel="noreferrer">Earthdata</a>.</footer>
     </main>
   </div>
 }

@@ -184,7 +184,7 @@ export default function LocationSearch({ label, placeholder, kind, countryCode, 
       {kind !== 'country' && !suggestions.length && !busy && !error && <p>{countryCode === 'MX' ? 'No hay más localidades en el catálogo local. Escribe el nombre para buscar en línea.' : 'Escribe el nombre para buscar en línea. La lista completa requiere datos del servicio geográfico.'}</p>}
       {suggestions.length > 0 && <div className="geo-options-heading">{kind === 'country' ? 'Selecciona un país' : kind === 'state' ? 'Selecciona un estado o provincia' : 'Selecciona una ciudad o municipio'} · {suggestions.length} opciones</div>}
       {kind==='state' && isoStates.length>shown && <button type="button" onClick={()=>setShown(n=>n+20)}>Cargar más subdivisiones ISO</button>}
-      {kind==='city' && items.length>=cityLimit && cityLimit<50 && <button type="button" onClick={()=>setCityLimit(n=>Math.min(50,n+20))}>Cargar m?s localidades</button>}
+      {kind==='city' && items.length>=cityLimit && cityLimit<50 && <button type="button" onClick={()=>setCityLimit(n=>Math.min(50,n+20))}>Cargar más localidades</button>}
       {suggestions.map((item, index) => <button type="button" role="option" aria-selected={highlighted === index} key={`${item.label}-${item.lon}-${item.lat}`}
         onMouseDown={event => event.preventDefault()}
         onMouseEnter={() => setHighlighted(index)}

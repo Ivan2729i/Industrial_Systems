@@ -98,3 +98,6 @@ src/datos/lotes/
 # Frontend dependencies and outputs
 node_modules/
 frontend/dist/
+
+# Local browser verification artifacts (kept on disk)
+frontend/test-results/

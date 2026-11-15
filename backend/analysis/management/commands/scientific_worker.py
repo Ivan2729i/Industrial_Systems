@@ -44,14 +44,14 @@ class Command(BaseCommand):
                     delta=abs((datetime.strptime(m['fecha_hora'],'A%Y%j.%H%M')-datetime.strptime(v['fecha_hora'],'A%Y%j.%H%M')).total_seconds())/60
                     if delta<=15:pairs.append((delta,m,v))
             if not pairs:run.status='SIN_PAREJA_COMPATIBLE';run.save();return
-            run.parameters={**params,'pairs_total':len(pairs),'pairs_completed':0};run.status='PROCESANDO';run.records=0;run.save()
+            run.parameters={**params,'pairs_total':len(pairs),'pairs_completed':0,'pixel_detections_completed':0};run.status='PROCESANDO';run.records=0;run.save()
             for i,(_,m,v) in enumerate(sorted(pairs,key=lambda r:r[0])):
                 target=work/f'pair-{i:03d}'
                 command=[sys.executable,str(root/'src/run_harmonization.py'),'--bbox='+params['bbox'],'--date',str(run.date),'--region',run.region_id,'--modis',m['fecha_hora'],'--viirs',v['fecha_hora'],'--version',run.version,'--resolution',str(run.resolution),'--workdir',str(target)]
                 with (work/f'pair-{i:03d}.log').open('a',encoding='utf-8') as output:
                     subprocess.run(command,stdout=output,stderr=subprocess.STDOUT,check=True,timeout=7200)
                 state=json.loads((target/'run.json').read_text(encoding='utf-8'))
-                run.records+=state.get('records',0);run.parameters['pairs_completed']=i+1;run.save()
+                run.records+=state.get('records',0);run.parameters['pixel_detections_completed']+=state.get('pixel_detections',0);run.parameters['pairs_completed']=i+1;run.save()
             run.status='COMPLETADO';run.save()
         except Exception as exc:
             run.status='ERROR_PROCESAMIENTO';run.error_type=type(exc).__name__;run.save()

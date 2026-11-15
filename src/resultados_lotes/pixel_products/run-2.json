@@ -1,0 +1,77 @@
+{
+  "method": "L2_FOOTPRINT_ONE_TO_MANY_EXPLORATORY_V1",
+  "pixels": [
+    {
+      "id": "13a485c79be68f6f89f894a025699cf1bf3ba565ec628f7a7423cec9c0bd5ecd",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024107.0712",
+      "source_file": "VNP14IMG.A2024107.0712.002.2024107151544.nc",
+      "row": 1866,
+      "column": 699,
+      "observed_at": "2024-04-16T07:13:43.971996+00:00",
+      "latitude": 14.141697883605957,
+      "longitude": 101.04429626464844,
+      "fire_class": 8,
+      "qa": {
+        "raw": 64768,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024107.0712.002.2024107145236.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "8764a4c0effffff"
+    }
+  ],
+  "detections": [
+    {
+      "representative": "13a485c79be68f6f89f894a025699cf1bf3ba565ec628f7a7423cec9c0bd5ecd",
+      "members": [
+        "13a485c79be68f6f89f894a025699cf1bf3ba565ec628f7a7423cec9c0bd5ecd"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "8764a4c0effffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.88,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "global_v2_experimental"
+      }
+    }
+  ],
+  "conservation": {
+    "source_audit": {
+      "MODIS": {
+        "positive_mask_pixels_in_granule": 1515,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 1515,
+        "retained_in_scope": 0
+      },
+      "VIIRS": {
+        "positive_mask_pixels_in_granule": 7111,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 7110,
+        "retained_in_scope": 1
+      }
+    },
+    "input_positive_pixels": 1,
+    "output_members": 1,
+    "output_detections": 1
+  },
+  "h3_source_version": "global_v2_experimental"
+}

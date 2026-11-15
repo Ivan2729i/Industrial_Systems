@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from datetime import timezone
 from .models import H3Observation, Region
 
 class RegionSerializer(serializers.ModelSerializer):
@@ -7,6 +8,8 @@ class RegionSerializer(serializers.ModelSerializer):
         fields = ['id','name','west','south','east','north']
 
 class ObservationSerializer(serializers.ModelSerializer):
+    modis_utc=serializers.DateTimeField(default_timezone=timezone.utc,allow_null=True)
+    viirs_utc=serializers.DateTimeField(default_timezone=timezone.utc,allow_null=True)
     fecha = serializers.DateField(source='pair.date', read_only=True)
     region_id = serializers.CharField(source='pair.region_id', read_only=True)
     region_nombre = serializers.CharField(source='pair.region.name', read_only=True)
