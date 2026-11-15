@@ -1,0 +1,17 @@
+{
+  "config": {
+    "date": "2024-04-16",
+    "version": "world_batch_v2",
+    "grid_degrees": 0.5,
+    "total_tiles": 244800,
+    "latitude_limits": [
+      -85,
+      85
+    ]
+  },
+  "requested": {
+    "101422": 3,
+    "147040": 4
+  },
+  "not_requested_tiles": 244798
+}

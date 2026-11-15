@@ -53,6 +53,9 @@ def filtered(request, require_scope=False):
         qs = qs.filter(**{f['sensor']+'_fuego__gt':0}) if f.get('sensor') else qs.filter(Q(modis_fuego__gt=0)|Q(viirs_fuego__gt=0))
     if 'bbox' in f:
         west,south,east,north = f['bbox']
+        qs=qs.filter(Q(pair__region__west__isnull=True) | Q(pair__region__west__lte=east,pair__region__east__gte=west,pair__region__south__lte=north,pair__region__north__gte=south))
+        contained=qs.filter(pair__region__west__gte=west,pair__region__east__lte=east,pair__region__south__gte=south,pair__region__north__lte=north)
+        if not qs.exclude(pk__in=contained.values('pk')).exists(): return qs
         # Include H3 polygons intersecting the bounding box, not only their centers.
         shape = h3.LatLngPoly([(south,west),(south,east),(north,east),(north,west)])
         resolutions = qs.order_by().values_list('resolucion_h3',flat=True).distinct()
@@ -132,4 +135,13 @@ def runs(request):
 @api_view(['GET'])
 def scientific_runs(request):
     from .models import HarmonizationRun
-    return Response(list(HarmonizationRun.objects.order_by('-id').values('id','region_id','date','version','resolution','status','parameters','products','records','error_type')[:200]))
+    rows=list(HarmonizationRun.objects.order_by('-id').values('id','region_id','date','version','resolution','status','parameters','products','records','error_type')[:200])
+    public={'bbox','date','version','resolution','modis','viirs','region','kind','pairs_total','pairs_completed'}
+    for row in rows: row['parameters']={k:v for k,v in row['parameters'].items() if k in public}
+    return Response(rows)
+
+
+@api_view(['GET'])
+def scientific_availability(request):
+    qs=filtered(request,require_scope=True)
+    return Response({'processed_observations':qs.count(),'coverage':list(qs.values('pair__region_id','pair__date','version_armonizacion','pair__region__west','pair__region__south','pair__region__east','pair__region__north').annotate(observations=Count('id')).order_by('pair__date')[:200]),'note':'Cobertura procesada por parejas; no acredita cobertura mundial completa ni validacion cientifica.'})

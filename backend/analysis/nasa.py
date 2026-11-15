@@ -27,7 +27,7 @@ def bounding_box(value):
 
 def open_nasa(url):
     try:
-        return urlopen(Request(url,headers={'User-Agent':'FireSight/1.0','Accept':'application/json,text/csv'}),timeout=60)
+        return urlopen(Request(url,headers={'User-Agent':'FireSight/1.0','Accept':'application/json,text/csv'}),timeout=20)
     except HTTPError as exc:
         code=exc.code
         message={401:'Credenciales NASA invalidas',403:'Acceso NASA denegado',429:'Limite NASA alcanzado; reanuda mas tarde'}.get(code,'Servicio NASA no disponible')
@@ -37,9 +37,9 @@ def open_nasa(url):
 
 class FIRMSClient:
     def __init__(self):
-        self.key=os.getenv('FIRMS_MAP_KEY','').strip()
+        self.key=(os.getenv('NASA_FIRMS_MAP_KEY') or os.getenv('FIRMS_MAP_KEY','')).strip()
         if not self.key:
-            raise NASAError('Configura FIRMS_MAP_KEY en backend/.env.')
+            raise NASAError('Configura NASA_FIRMS_MAP_KEY en backend/.env.')
     def availability(self, source):
         if source not in SOURCES: raise ValueError('Fuente FIRMS desconocida')
         with open_nasa(f'https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/{quote(self.key,safe="")}/{source}') as response:
@@ -77,3 +77,14 @@ class CMRClient:
         params={'collection_concept_id':collection_id,'temporal':f'{start}T00:00:00Z,{end}T23:59:59Z'}
         if area!='world': params['bounding_box']=area
         return self.search('granules',**params)
+
+
+def split_bounding_box(value):
+    """Split a west>east viewport into two legal NASA boxes."""
+    if value == 'world': return [value]
+    try:
+        w,s,e,n = map(float,value.split(','))
+        if all(math.isfinite(v) for v in (w,s,e,n)) and -180 <= e < w <= 180 and -90 <= s < n <= 90:
+            return [bounding_box(f'{w},{s},180,{n}'), bounding_box(f'-180,{s},{e},{n}')]
+    except (ValueError,AttributeError): pass
+    return [bounding_box(value)]

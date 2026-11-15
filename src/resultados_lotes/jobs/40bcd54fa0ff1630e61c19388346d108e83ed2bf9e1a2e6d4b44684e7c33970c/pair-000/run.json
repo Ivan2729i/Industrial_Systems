@@ -1,0 +1,59 @@
+{
+  "config": {
+    "bbox": "31.0,-15.0,31.3,-14.7",
+    "date": "2024-04-16",
+    "region": "area-40bcd54fa0ff1630e61c",
+    "modis": "A2024107.1210",
+    "viirs": "A2024107.1206",
+    "resolution": "7",
+    "version": "l2_regional_v2",
+    "workdir": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\resultados_lotes\\jobs\\40bcd54fa0ff1630e61c19388346d108e83ed2bf9e1a2e6d4b44684e7c33970c\\pair-000",
+    "cache_dir": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\datos\\cache_level2",
+    "local_granules": "None"
+  },
+  "status": "COMPLETADO",
+  "products": [
+    {
+      "product": "MYD14",
+      "granule": "A2024107.1210",
+      "collection_version": "061",
+      "file": "MYD14.A2024107.1210.061.2024108111345.hdf",
+      "bytes": 439227,
+      "sha256": "f4f06e714a593e82f5b9f4655ccc2edf8311dff81611c912449d0397bde7597b",
+      "cmr_concept_id": "G2938107217-LPCLOUD",
+      "granule_ur": "MYD14.A2024107.1210.061.2024108111345"
+    },
+    {
+      "product": "MYD03",
+      "granule": "A2024107.1210",
+      "collection_version": "061",
+      "file": "MYD03.A2024107.1210.061.2024108145920.hdf",
+      "bytes": 33943695,
+      "sha256": "1b4996a8b5240b449f2c1977ae51b74a6dbfe417c9095ed6c1b1825c93eba1b9",
+      "cmr_concept_id": "G2937844922-LAADS",
+      "granule_ur": "LAADS:8157633965"
+    },
+    {
+      "product": "VNP14IMG",
+      "granule": "A2024107.1206",
+      "collection_version": "002",
+      "file": "VNP14IMG.A2024107.1206.002.2024107202543.nc",
+      "bytes": 3944168,
+      "sha256": "f69682e534d106921e16e95d9515af0640c39309b97dd368199f4c4a15ac926d",
+      "cmr_concept_id": "G2937279339-LPCLOUD",
+      "granule_ur": "VNP14IMG.A2024107.1206.002.2024107202543"
+    },
+    {
+      "product": "VNP03IMG",
+      "granule": "A2024107.1206",
+      "collection_version": "002",
+      "file": "VNP03IMG.A2024107.1206.002.2024107194901.nc",
+      "bytes": 178523244,
+      "sha256": "df53abd0e90697a549773bdea751b09e65eb6d7fbe871d2cfec13bf2e721a15b",
+      "cmr_concept_id": "G2936966317-LAADS",
+      "granule_ur": "LAADS:8156464086"
+    }
+  ],
+  "records": 203,
+  "output": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\resultados_lotes\\jobs\\40bcd54fa0ff1630e61c19388346d108e83ed2bf9e1a2e6d4b44684e7c33970c\\pair-000\\results\\observations.csv"
+}

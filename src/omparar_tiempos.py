@@ -124,15 +124,20 @@ def encontrar(carpeta, prefijo, extension):
 def convertir_utc(tai93):
     """
     Convierte los tiempos TAI93 utilizados
-    en los archivos del experimento de 2024.
+    con correccion historica de segundos intercalares desde 1993.
     """
 
-    return EPOCA_TAI93 + timedelta(
-        seconds=(
-            float(tai93)
-            - LEAP_SECONDS_1993_2024
-        )
-    )
+    value=float(tai93)
+    if not np.isfinite(value) or value<0: raise ValueError('Tiempo TAI93 invalido')
+    transitions=['1993-07-01','1994-07-01','1996-01-01','1997-07-01','1999-01-01','2006-01-01','2009-01-01','2012-07-01','2015-07-01','2017-01-01']
+    offset=0
+    for count,stamp in enumerate(transitions,1):
+        utc=datetime.fromisoformat(stamp).replace(tzinfo=timezone.utc)
+        threshold=(utc-EPOCA_TAI93).total_seconds()+count
+        if threshold-1<=value<threshold: raise ValueError('Segundo intercalar no representable en datetime')
+        if value>=threshold: offset=count
+    return EPOCA_TAI93+timedelta(seconds=value-offset)
+
 
 
 def formato_utc(tai93):

@@ -1,0 +1,47 @@
+{
+  "config": {
+    "bbox": "101,14,101.2,14.2",
+    "date": "2024-04-16",
+    "region": "thailand_test",
+    "modis": "A2024107.0725",
+    "viirs": "A2024107.0712",
+    "resolution": "7",
+    "version": "global_v2_experimental",
+    "workdir": "src\\resultados_lotes\\global_thailand_20240416",
+    "cache_dir": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\datos\\cache_level2",
+    "local_granules": "None"
+  },
+  "status": "COMPLETADO",
+  "products": [
+    {
+      "product": "MYD14",
+      "granule": "A2024107.0725",
+      "collection_version": "061",
+      "file": "MYD14.A2024107.0725.061.2024107154342.hdf",
+      "bytes": 642375
+    },
+    {
+      "product": "MYD03",
+      "granule": "A2024107.0725",
+      "collection_version": "061",
+      "file": "MYD03.A2024107.0725.061.2024107162132.hdf",
+      "bytes": 35361365
+    },
+    {
+      "product": "VNP14IMG",
+      "granule": "A2024107.0712",
+      "collection_version": "002",
+      "file": "VNP14IMG.A2024107.0712.002.2024107151544.nc",
+      "bytes": 2995677
+    },
+    {
+      "product": "VNP03IMG",
+      "granule": "A2024107.0712",
+      "collection_version": "002",
+      "file": "VNP03IMG.A2024107.0712.002.2024107145236.nc",
+      "bytes": 170844139
+    }
+  ],
+  "records": 97,
+  "output": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\resultados_lotes\\global_thailand_20240416\\results\\observations.csv"
+}

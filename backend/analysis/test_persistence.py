@@ -37,6 +37,15 @@ class PersistenceTests(TestCase):
     def setUpTestData(cls):
         call_command('import_observations',file=str(SOURCE),stdout=io.StringIO())
     def setUp(self): self.client = APIClient()
+    def test_harmonization_by_date_without_region(self):
+        for day,total,evaluable,both in [('2024-04-16',775,746,4),('2024-04-19',819,718,5)]:
+            response=APIClient().get('/api/v1/harmonization/',{'start':day,'end':day,'limit':1000})
+            self.assertEqual(response.status_code,200)
+            self.assertEqual(response.data['count'],total)
+            rows=response.data['results']
+            self.assertEqual(sum(r['coincidencia_original']!='NO_EVALUABLE' for r in rows),evaluable)
+            self.assertEqual(sum(r['coincidencia_original']=='AMBOS' for r in rows),both)
+
     def test_source_totals_and_nulls(self):
         self.assertEqual(H3Observation.objects.count(),2179)
         for region,count in [('michoacan_piloto',585),('guerrero',775),('tabasco_chiapas',819)]:
