@@ -1,4 +1,5 @@
-
+import json
+import os
 import csv
 import math
 from datetime import date, datetime, timezone
@@ -45,7 +46,7 @@ def parse_number(value):
     return number
 
 
-def read_detections(
+def read_source_detections(
     sensor=None,
     requested_date=None,
     satellite=None,
@@ -145,3 +146,109 @@ def read_detections(
                 })
 
     return results
+
+CACHE_FILE = (
+    Path(settings.BASE_DIR).parent
+    / "src"
+    / "resultados_lotes"
+    / "firms_pilot_cache.json"
+)
+
+
+def build_detections_cache():
+    """
+    Genera una copia procesada de las detecciones
+    del piloto conservando sus campos originales.
+    """
+    records = read_source_detections()
+
+    payload = {
+        "source": "FIRMS-format CSV (provenance pending)",
+        "records": records,
+        "source_mtimes_ns": {
+            sensor: path.stat().st_mtime_ns
+            for sensor, path in FILES.items()
+        },
+    }
+
+    CACHE_FILE.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    temporary = CACHE_FILE.with_suffix(".tmp")
+
+    try:
+        with temporary.open(
+            "w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(
+                payload,
+                file,
+                ensure_ascii=False,
+                allow_nan=False,
+            )
+
+        os.replace(temporary, CACHE_FILE)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+    return len(records)
+
+
+def read_detections(
+    sensor=None,
+    requested_date=None,
+    satellite=None,
+):
+    """
+    Lee el conjunto procesado y aplica los filtros.
+    No recorre los CSV originales por solicitud.
+    """
+    if not CACHE_FILE.is_file():
+        raise FileNotFoundError(
+            "No existe la cache FIRMS. "
+            "Ejecuta build_firms_cache."
+        )
+
+    with CACHE_FILE.open(
+        "r",
+        encoding="utf-8",
+    ) as file:
+        payload = json.load(file)
+
+    for name, source_path in FILES.items():
+        if not source_path.is_file():
+            raise FileNotFoundError(
+                f"Falta archivo de origen: {source_path}"
+            )
+
+        stored_mtime = payload[
+            "source_mtimes_ns"
+        ].get(name)
+
+        if stored_mtime != source_path.stat().st_mtime_ns:
+            raise ValueError(
+                "Cache desactualizada. "
+                "Ejecuta build_firms_cache."
+            )
+
+    results = payload["records"]
+
+    return [
+        record
+        for record in results
+        if (
+            not sensor
+            or record["sensor"] == sensor
+        )
+        and (
+            not requested_date
+            or record["acq_date"] == requested_date
+        )
+        and (
+            not satellite
+            or record["satellite"] == satellite
+        )
+    ]
