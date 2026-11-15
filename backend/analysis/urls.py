@@ -87,3 +87,10 @@ urlpatterns += [
 ]
 
 urlpatterns += [path('v1/harmonization/runs/', api.scientific_runs), path('v1/harmonization/versions/', api.runs)]
+
+urlpatterns += [path('v1/detections/availability/', detections_api.availability)]
+
+from . import scientific_jobs
+urlpatterns += [path('v1/harmonization/jobs/', scientific_jobs.submit)]
+
+urlpatterns += [path('v1/harmonization/availability/', api.scientific_availability)]

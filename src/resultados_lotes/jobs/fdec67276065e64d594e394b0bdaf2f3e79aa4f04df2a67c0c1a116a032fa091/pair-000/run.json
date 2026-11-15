@@ -1,0 +1,47 @@
+{
+  "config": {
+    "bbox": "-100.0,17.0,-99.5,17.5",
+    "date": "2024-04-16",
+    "region": "area-fdec67276065e64d594e",
+    "modis": "A2024107.2035",
+    "viirs": "A2024107.2042",
+    "resolution": "7",
+    "version": "world_batch_v2",
+    "workdir": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\resultados_lotes\\jobs\\fdec67276065e64d594e394b0bdaf2f3e79aa4f04df2a67c0c1a116a032fa091\\pair-000",
+    "cache_dir": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\datos\\cache_level2",
+    "local_granules": "None"
+  },
+  "status": "COMPLETADO",
+  "products": [
+    {
+      "product": "MYD14",
+      "granule": "A2024107.2035",
+      "collection_version": "061",
+      "file": "MYD14.A2024107.2035.061.2024114130351.hdf",
+      "bytes": 438157
+    },
+    {
+      "product": "MYD03",
+      "granule": "A2024107.2035",
+      "collection_version": "061",
+      "file": "MYD03.A2024107.2035.061.2024108151338.hdf",
+      "bytes": 31080222
+    },
+    {
+      "product": "VNP14IMG",
+      "granule": "A2024107.2042",
+      "collection_version": "002",
+      "file": "VNP14IMG.A2024107.2042.002.2024108044018.nc",
+      "bytes": 1685837
+    },
+    {
+      "product": "VNP03IMG",
+      "granule": "A2024107.2042",
+      "collection_version": "002",
+      "file": "VNP03IMG.A2024107.2042.002.2024108041211.nc",
+      "bytes": 142979671
+    }
+  ],
+  "records": 547,
+  "output": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\resultados_lotes\\jobs\\fdec67276065e64d594e394b0bdaf2f3e79aa4f04df2a67c0c1a116a032fa091\\pair-000\\results\\observations.csv"
+}

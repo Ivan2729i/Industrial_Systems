@@ -1,6 +1,6 @@
 
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlsplit, unquote
 import csv
 import re
@@ -30,7 +30,7 @@ def buscar(**filtros):
         try:
             return earthaccess.search_data(**filtros)
         except Exception as error:
-            print(f"Error de consulta: {error}")
+            print(f"Error de consulta NASA: {type(error).__name__}")
             if intento == 2:
                 raise
             time.sleep(2 * (intento + 1))
@@ -77,7 +77,7 @@ def main():
     if first>last: parser.error('Rango invertido')
     if args.output.exists(): parser.error('El manifiesto de salida ya existe; usa otro nombre')
     REGION=(west,south,east,north)
-    PERIODO=(f'{first}T00:00:00',f'{last}T23:59:59')
+    PERIODO=((datetime.fromisoformat(str(first))-timedelta(minutes=15)).isoformat(),(datetime.fromisoformat(str(last))+timedelta(days=1,minutes=15)).isoformat())
     SALIDA=args.output
     SALIDA.parent.mkdir(parents=True,exist_ok=True)
 

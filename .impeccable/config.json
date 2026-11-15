@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-15T08:07:19.629Z",
+        "reason": "Agent: existing TerraFlare typography; user explicitly requested preserving typography and visual identity rather than redesigning the application."
+      }
+    ]
+  }
+}

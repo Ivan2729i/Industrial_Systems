@@ -20,7 +20,10 @@ export type Region = { id: string; name: string; west: number | null; south: num
 const base = (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_BASE_URL || '/api'
 export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(base.replace(/\/$/, '') + path, { signal })
-  if (!response.ok) throw new Error('La API respondi? HTTP ' + response.status + '. Revisa Django y PostgreSQL.')
+  if (!response.ok) {
+    const body = await response.json().catch(() => null)
+    throw new Error('HTTP ' + response.status + ': ' + (body ? JSON.stringify(body) : response.statusText))
+  }
   return response.json() as Promise<T>
 }
 export const fetchRegions = (signal: AbortSignal) => apiGet<Region[]>('/v1/regions/', signal)
@@ -39,17 +42,18 @@ export function summarize(rows: Cell[], sensor: Sensor) {
 }
 
 // Queries are scoped on the server. Follow every bounded page; never silently truncate.
-export async function fetchCellsRange(start: string, end: string, region: string, signal: AbortSignal, version = 'v1_experimental'): Promise<Cell[]> {
-  if (!region || !start || !end || start > end) throw new Error('Selecciona regi?n y fechas v?lidas.')
+export async function fetchCellsRange(start: string, end: string, region: string, signal: AbortSignal, version = 'v1_experimental', bbox = ''): Promise<Cell[]> {
+  if (!start || !end || start > end) throw new Error('Selecciona región y fechas válidas.')
   const result: Cell[] = []
   let offset = 0
   while (true) {
-    const params = new URLSearchParams({ region, start, end, version, limit: '1000', offset: String(offset) })
+    const params = new URLSearchParams({ ...(region ? {region} : {}), start, end, version, limit: '1000', offset: String(offset) })
+    if(bbox) params.set('bbox',bbox)
     const page = await apiGet<{ count: number; next: string | null; results: Cell[] }>('/v1/observations/?' + params, signal)
-    if (!Array.isArray(page.results) || !page.results.every(row => isValidCell(row.celda_h3) && getResolution(row.celda_h3) === row.resolucion_h3)) throw new Error('Respuesta H3 inv?lida.')
+    if (!Array.isArray(page.results) || !page.results.every(row => isValidCell(row.celda_h3) && getResolution(row.celda_h3) === row.resolucion_h3)) throw new Error('Respuesta H3 inválida.')
     result.push(...page.results)
     if (!page.next) return result
-    if (!page.results.length) throw new Error('Paginaci?n inv?lida.')
+    if (!page.results.length) throw new Error('Paginación inválida.')
     offset += page.results.length
     if (offset > 20000) throw new Error('Demasiadas observaciones: reduce el rango de fechas.')
   }
