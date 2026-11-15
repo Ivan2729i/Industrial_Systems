@@ -94,3 +94,7 @@ src/datos/lotes/
 *.pickle
 
 
+
+# Frontend dependencies and outputs
+node_modules/
+frontend/dist/

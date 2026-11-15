@@ -1,0 +1,7 @@
+earthaccess>=0.15,<1
+numpy
+pandas
+h5py
+pyhdf
+shapely
+pyproj

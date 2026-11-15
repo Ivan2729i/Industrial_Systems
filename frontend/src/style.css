@@ -144,7 +144,7 @@ footer p+p{margin-top:5px}
 .map-credits a{color:#bde7ff}
 .map-credits .cesium-credit-logoContainer img{max-height:16px}
 .map-credits .cesium-credit-textContainer{font-size:10px}
-.map .legend{bottom:35px}
+.map .legend{top:60px;bottom:auto;max-width:calc(100% - 48px);font-size:11px}
 @media(max-width:650px){.geo-field{max-width:none;min-width:140px;flex-basis:45%}.map-credits{max-width:90%;font-size:9px}}
 
 .geo-options button[aria-selected="true"]{background:#234b67;outline:1px solid #3a7194}
@@ -163,3 +163,10 @@ footer p+p{margin-top:5px}
 .geo-options-heading{position:sticky;top:0;background:#172b40;color:#9ddcff;padding:9px;font-size:12px;font-weight:600;z-index:1;border-bottom:1px solid #3c6079}
 .geo-options button{cursor:pointer}
 .geo-field:focus-within{z-index:220}
+
+.cell-detail { box-sizing:border-box; position:absolute; top:60px; right:16px; width:min(370px,90%); max-height:75%; overflow:auto; padding:18px; border:1px solid #526073; border-radius:10px; background:#142130f2; color:#f1f5f9; z-index:5; font-size:13px; }
+.cell-detail button { float:right; padding:2px 10px; }
+.cell-detail dt { color:#a9c1d0; margin-top:8px; }
+.cell-detail dd { margin:2px 0; overflow-wrap:anywhere; }
+.filters select { display:block; max-width:270px; padding:10px; color:inherit; background:#172632; border:1px solid #526073; border-radius:6px; }
+@media(max-width:600px) { .cell-detail { top:50px; max-height:60%; } }

@@ -62,3 +62,28 @@ urlpatterns = [
         name="firms-detections",
     ),
 ]
+
+# Versioned public scientific API: PostgreSQL only. Legacy analysis routes remain available.
+from . import api
+urlpatterns += [
+    path('health/', api.health),
+    path('v1/regions/', api.regions),
+    path('v1/dates/', api.dates),
+    path('v1/observations/', api.Observations.as_view()),
+    path('v1/observations/<int:pk>/', api.Observation.as_view()),
+    path('v1/summary/', api.summary),
+    path('v1/map/', api.map_view),
+]
+
+from . import detections_api
+urlpatterns += [path("v1/detections/", detections_api.detections), path("v1/sensors/", detections_api.sensors)]
+
+urlpatterns += [
+    path('v1/detections/summary/', detections_api.detections),
+    path('v1/detections/dates/', detections_api.dates),
+    path('v1/harmonization/', api.Observations.as_view()),
+    path('v1/harmonization/cells/', api.map_view),
+    path('v1/harmonization/summary/', api.summary),
+]
+
+urlpatterns += [path('v1/harmonization/runs/', api.scientific_runs), path('v1/harmonization/versions/', api.runs)]

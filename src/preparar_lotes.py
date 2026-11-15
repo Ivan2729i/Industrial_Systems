@@ -62,6 +62,25 @@ def fecha_hora(clave):
 
 
 def main():
+    import argparse
+    from datetime import date
+    global REGION, PERIODO, SALIDA
+    parser = argparse.ArgumentParser(description='Prepara manifiesto Aqua/SNPP sin modificar el experimento V1')
+    parser.add_argument('--bbox', required=True, help='oeste,sur,este,norte')
+    parser.add_argument('--start', required=True)
+    parser.add_argument('--end', required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    west,south,east,north = map(float,args.bbox.split(','))
+    if not (-180 <= west < east <= 180 and -90 <= south < north <= 90): parser.error('bbox invalido')
+    first,last=date.fromisoformat(args.start),date.fromisoformat(args.end)
+    if first>last: parser.error('Rango invertido')
+    if args.output.exists(): parser.error('El manifiesto de salida ya existe; usa otro nombre')
+    REGION=(west,south,east,north)
+    PERIODO=(f'{first}T00:00:00',f'{last}T23:59:59')
+    SALIDA=args.output
+    SALIDA.parent.mkdir(parents=True,exist_ok=True)
+
     print("FIRESIGHT - PREPARACION AUTOMATICA DE LOTES")
     print("=" * 55)
 
