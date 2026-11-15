@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import Globe from './Globe'
+import Analytics from './Analytics'
 import ScientificJobs from './ScientificJobs'
 import LocationSearch, { type Place } from './LocationSearch'
 import { apiGet, fetchOperationalPoints, fetchHarmonizedPoints, comparable, fetchCellsRange, fetchRegions, fetchDates, sensors, summarize, type Cell, type PixelCatalog } from './data'
@@ -37,6 +38,7 @@ function App() {
   const availabilityQuery = useQuery({queryKey:['nasa-availability',sensor],queryFn:({signal}) => apiGet<{min_date:string;max_date:string;products:{source:string;min_date:string;max_date:string}[]}>('/v1/detections/availability/?sensor='+sensor,signal),staleTime:3600000,retry:false})
   const available = availabilityQuery.data
   const [menuOpen, setMenuOpen] = useState(false)
+  const [page, setPage] = useState<'home' | 'analytics'>('home')
   const [country, setCountry] = useState('')
   const [region, setRegion] = useState('')
   const regionQuery = useQuery({ queryKey: ['regions'], queryFn: ({ signal }) => fetchRegions(signal), retry: false })
@@ -75,7 +77,6 @@ function App() {
   const regions = useMemo(() => unique(rows.filter(row => !country || row.pais === country).map(row => row.estado ?? '')), [rows, country])
   const selected = useMemo(() => rows.filter(row => (!country || row.pais === country) &&
     (!region || row.region_id === region)), [rows, country, region])
-  const candidates = useMemo(() => selected.filter(comparable), [selected])
   const visible = selected
   const comparableCounts = ['AMBOS', 'SOLO_MODIS', 'SOLO_VIIRS', 'NINGUNO', 'NO_EVALUABLE'].map(label => ({ label, value: selected.filter(row => row.coincidencia_qa === label).length }))
   useEffect(() => {
@@ -86,10 +87,6 @@ function App() {
   }, [menuOpen])
   const hasObservations = visible.length > 0
   const status = dateRangeError || (!globalFirms && operational && !showH3 ? operationalQuery.isError ? 'Error consultando la integraci\u00f3n mundial FIRMS.' : operationalQuery.isFetching ? 'Cargando producto operativo mundial...' : operationalQuery.data?.missing_dates.length ? 'Hay fechas pendientes de sincronizaci\u00f3n mundial. Solicita el trabajo o ejecuta harmonize_firms.' : !operationalQuery.data?.count ? 'Sin detecciones para este per\u00edodo y \u00e1rea.' : '' : '') || (globalFirms || (operational && !showH3) ? '' : !showH3 ? (pointsQuery.isError ? 'Error consultando el producto armonizado.' : pointsQuery.isFetching ? 'Cargando detecciones armonizadas Level 2…' : !pointsQuery.data?.length ? 'No hay detecciones armonizadas procesadas para este período y área.' : '') : (query.isError ? 'Error consultando el análisis H3.' : query.isFetching ? 'Cargando análisis H3…' : !visible.length ? 'No hay observaciones H3 para este período.' : ''))
-  const source = sensors.map(sensor => {
-    const passes = unique(visible.map(row => row[`${sensor}_sobrevuelo`]))
-    return passes.length ? labels[sensor] + ' ' + passes.join(', ') : ''
-  }).filter(Boolean).join(' · ')
 
   return <div className="shell">
     <header className="top">
@@ -106,15 +103,29 @@ function App() {
       <aside id="main-menu" className="side-menu" aria-label="Menú principal">
         <div className="side-menu-heading"><span>MENÚ PRINCIPAL</span><button type="button" onClick={() => setMenuOpen(false)} aria-label="Cerrar menú">×</button></div>
         <nav aria-label="Navegación principal">
-          <button type="button" className="side-menu-item active" aria-current="page" onClick={() => { setTab('MODIS'); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+          <button type="button" className={`side-menu-item ${page === 'home' ? 'active' : ''}`} aria-current={page === 'home' ? 'page' : undefined} onClick={() => { setPage('home'); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
             <span className="menu-home-icon" aria-hidden="true">⌂</span><span>Pantalla principal</span><span className="menu-item-chevron" aria-hidden="true">›</span>
           </button>
-          <button className="side-menu-item" disabled>Analítica <small>Fase 2 · Próximamente</small></button><button className="side-menu-item" disabled>Blockchain <small>Fase 3 · Próximamente</small></button>
+          <button
+            type="button"
+            className={`side-menu-item ${page === 'analytics' ? 'active' : ''}`}
+            aria-current={page === 'analytics' ? 'page' : undefined}
+            onClick={() => {
+              setPage('analytics')
+              setMenuOpen(false)
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+          >
+            <span>Analítica</span>
+            <span className="menu-item-chevron">›</span>
+          </button>
+
         </nav>
         <div className="side-menu-footer">TerraFlare · NASA Space Apps Challenge</div>
       </aside>
     </>}
     <main className="content">
+      <div style={{ display: page === 'home' ? 'contents' : 'none' }}>
       <nav className="view-tabs" aria-label="Secciones de TerraFlare">{tabs.map((item, index) =>
         <button type="button" role="tab" aria-selected={tab === item} className={tab === item ? 'selected' : ''} key={item} onClick={() => { switchTab(item) }}>
           <span className="tab-letter" aria-hidden="true">{index === 0 ? 'M' : index === 1 ? 'V' : 'A'}</span>
@@ -182,7 +193,17 @@ function App() {
       {!globalFirms && !showH3 && <section className="below-map" aria-label="Resumen de detecciones armonizadas"><span>{startDate} — {endDate} UTC · {operational ? operationalQuery.data?.count??0 : pointRows.length} resultados · {selectedLocation?.name || scientificArea || 'Mundo'} · {operational ? 'Integración operativa FIRMS mundial' : 'Level 2; cobertura procesada parcial'}</span><div className="metrics">{['ASOCIADA','SOLO_MODIS','SOLO_VIIRS',...(!operational?['SIN_COMPARABILIDAD']:[])].map(status=><span key={status}>{status}: {operational ? operationalQuery.data?.counts[status]??0 : pointRows.filter(p=>p.status===status).length}</span>)}</div><p className="note">{operational ? `Asociaciones exploratorias FIRMS: 1.500 m / 15 min, dentro de cada día UTC. Sin QA Level 2 ni cobertura compartida evaluada. ${operationalQuery.data?.mode==='aggregated' ? 'Vista mundial agrupada; cada punto usa una observación original representativa. Selecciona un área para ver el detalle.' : ''}` : 'Asociaciones Level 2 exploratorias. Cada punto utiliza un centro de píxel original.'}</p></section>}
       {!globalFirms && <ScientificJobs operational={operational && !showH3} date={startDate} bbox={harmonyBBox} onResults={(date,version)=>{setStartDate(date);setEndDate(date);setVersion(version);setOperational(false);setProductVersion('pixel_assoc_v1__'+version);setShowH3(false);setScientificArea('');setSelectedCountry(null);setSelectedPlace(null);setSelectedCity(null)}}/>}
       <footer>TerraFlare © {new Date().getFullYear()} · Datos: <a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noreferrer">NASA FIRMS</a> / <a href="https://www.earthdata.nasa.gov/" target="_blank" rel="noreferrer">Earthdata</a>.</footer>
-    </main>
+      </div>
+
+      {page === 'analytics' && (
+        <Analytics
+          onBack={() => {
+            setPage('home')
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+        />
+      )}
+      </main>
   </div>
 }
 
