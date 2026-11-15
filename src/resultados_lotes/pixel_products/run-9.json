@@ -1,0 +1,272 @@
+{
+  "method": "L2_FOOTPRINT_ONE_TO_MANY_EXPLORATORY_V1",
+  "pixels": [
+    {
+      "id": "5f86148c4d012e144f39270e6d1e17eeeb115a8f67c04c81a2a15085dfdd5549",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024107.1210",
+      "source_file": "MYD14.A2024107.1210.061.2024108111345.hdf",
+      "row": 1890,
+      "column": 579,
+      "observed_at": "2024-04-16T12:14:41.232788+00:00",
+      "latitude": -14.91215991973877,
+      "longitude": 31.008821487426758,
+      "fire_class": 8,
+      "qa": {
+        "raw": 127286,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024107.1210.061.2024108145920.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      }
+    },
+    {
+      "id": "8bb25650674633c68699894ee11035fda5e5d9cd312c6514f77c58c298c95473",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024107.1210",
+      "source_file": "MYD14.A2024107.1210.061.2024108111345.hdf",
+      "row": 1891,
+      "column": 579,
+      "observed_at": "2024-04-16T12:14:41.232788+00:00",
+      "latitude": -14.903191566467285,
+      "longitude": 31.00737762451172,
+      "fire_class": 9,
+      "qa": {
+        "raw": 61746,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024107.1210.061.2024108145920.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      }
+    },
+    {
+      "id": "50727344dce2272f0325acefa95bc4d6e27ccde55d431fb46123a08ea785b956",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024107.1206",
+      "source_file": "VNP14IMG.A2024107.1206.002.2024107202543.nc",
+      "row": 4181,
+      "column": 868,
+      "observed_at": "2024-04-16T12:09:51.754014+00:00",
+      "latitude": -14.938555717468262,
+      "longitude": 31.030248641967773,
+      "fire_class": 8,
+      "qa": {
+        "raw": 64512,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024107.1206.002.2024107194901.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      }
+    },
+    {
+      "id": "8785d2a861eb5a7357d2f470a1714c52e4ff69c332a4b44d4f2e370747587106",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024107.1206",
+      "source_file": "VNP14IMG.A2024107.1206.002.2024107202543.nc",
+      "row": 4181,
+      "column": 869,
+      "observed_at": "2024-04-16T12:09:51.754014+00:00",
+      "latitude": -14.939309120178223,
+      "longitude": 31.026533126831055,
+      "fire_class": 9,
+      "qa": {
+        "raw": 264,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024107.1206.002.2024107194901.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      }
+    },
+    {
+      "id": "746daba8ba119e40f1d928124719c486ab6251a6425f7b329eef6fed799fe85e",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024107.1206",
+      "source_file": "VNP14IMG.A2024107.1206.002.2024107202543.nc",
+      "row": 4201,
+      "column": 869,
+      "observed_at": "2024-04-16T12:09:53.533285+00:00",
+      "latitude": -14.903133392333984,
+      "longitude": 31.010120391845703,
+      "fire_class": 8,
+      "qa": {
+        "raw": 64768,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024107.1206.002.2024107194901.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      }
+    },
+    {
+      "id": "d79eb10485fb21642d3b519de310edcac3d0c67cfb7cde56c3b9c3fc3f99ad7d",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024107.1206",
+      "source_file": "VNP14IMG.A2024107.1206.002.2024107202543.nc",
+      "row": 4201,
+      "column": 870,
+      "observed_at": "2024-04-16T12:09:53.533285+00:00",
+      "latitude": -14.903875350952148,
+      "longitude": 31.006364822387695,
+      "fire_class": 9,
+      "qa": {
+        "raw": 264,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024107.1206.002.2024107194901.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      }
+    }
+  ],
+  "detections": [
+    {
+      "representative": "5f86148c4d012e144f39270e6d1e17eeeb115a8f67c04c81a2a15085dfdd5549",
+      "members": [
+        "5f86148c4d012e144f39270e6d1e17eeeb115a8f67c04c81a2a15085dfdd5549"
+      ],
+      "status": "SOLO_MODIS",
+      "h3": "879631914ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "A_0_A_5_MIN",
+          "coverage_shared_pct": 99.98,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "l2_regional_v2"
+      }
+    },
+    {
+      "representative": "8bb25650674633c68699894ee11035fda5e5d9cd312c6514f77c58c298c95473",
+      "members": [
+        "8bb25650674633c68699894ee11035fda5e5d9cd312c6514f77c58c298c95473",
+        "746daba8ba119e40f1d928124719c486ab6251a6425f7b329eef6fed799fe85e",
+        "d79eb10485fb21642d3b519de310edcac3d0c67cfb7cde56c3b9c3fc3f99ad7d"
+      ],
+      "status": "ASOCIADA",
+      "h3": "879631914ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "A_0_A_5_MIN",
+          "coverage_shared_pct": 99.98,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {
+          "746daba8ba119e40f1d928124719c486ab6251a6425f7b329eef6fed799fe85e": {
+            "overlap_viirs_fraction": 0.9999224996402132,
+            "center_distance_m": 295.18844101267206,
+            "difference_minutes": 4.794991716666667
+          },
+          "d79eb10485fb21642d3b519de310edcac3d0c67cfb7cde56c3b9c3fc3f99ad7d": {
+            "overlap_viirs_fraction": 0.9999999999999998,
+            "center_distance_m": 132.66511358476183,
+            "difference_minutes": 4.794991716666667
+          }
+        },
+        "reason": "spatiotemporal_footprint_association",
+        "h3_source_version": "l2_regional_v2"
+      }
+    },
+    {
+      "representative": "50727344dce2272f0325acefa95bc4d6e27ccde55d431fb46123a08ea785b956",
+      "members": [
+        "50727344dce2272f0325acefa95bc4d6e27ccde55d431fb46123a08ea785b956"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "87963564dffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "A_0_A_5_MIN",
+          "coverage_shared_pct": 99.74,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "l2_regional_v2"
+      }
+    },
+    {
+      "representative": "8785d2a861eb5a7357d2f470a1714c52e4ff69c332a4b44d4f2e370747587106",
+      "members": [
+        "8785d2a861eb5a7357d2f470a1714c52e4ff69c332a4b44d4f2e370747587106"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "87963564dffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "A_0_A_5_MIN",
+          "coverage_shared_pct": 99.74,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "l2_regional_v2"
+      }
+    }
+  ],
+  "conservation": {
+    "input_positive_pixels": 6,
+    "output_members": 6,
+    "output_detections": 4
+  },
+  "h3_source_version": "l2_regional_v2"
+}

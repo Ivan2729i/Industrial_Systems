@@ -238,6 +238,15 @@ def coordenadas_validas(lat, lon):
     )
 
 
+def reconstruir_huella(x, y, dx, dy, ex, ey, sensor):
+    """Shared V1 footprint reconstruction; no change to its exploratory limits."""
+    horizontal,vertical=np.hypot(dx,dy),np.hypot(ex,ey)
+    limits=LIMITES[sensor]
+    if not (np.isfinite(horizontal) and np.isfinite(vertical) and 25<horizontal<limits['paso_max_m'] and 25<vertical<limits['paso_max_m']):return None
+    shape=Polygon([(x-dx/2-ex/2,y-dy/2-ey/2),(x+dx/2-ex/2,y+dy/2-ey/2),(x+dx/2+ex/2,y+dy/2+ey/2),(x-dx/2+ex/2,y-dy/2+ey/2)])
+    return shape if shape.is_valid and 1000<=shape.area<=limits['area_max_m2'] else None
+
+
 def acumular_huellas(sensor, bloques, ids, geometrias, indice, region,
                      proyector, rectangulo):
     """Estima cuadrilateros, recorta contra H3 y acumula areas sin duplicar."""
@@ -337,28 +346,9 @@ def acumular_huellas(sensor, bloques, ids, geometrias, indice, region,
         y0 = y0[buenas]
 
         for i in range(len(x0)):
-            paso_horizontal = np.hypot(dx[i], dy[i])
-            paso_vertical = np.hypot(ex[i], ey[i])
-            if not (
-                np.isfinite(paso_horizontal) and np.isfinite(paso_vertical)
-                and 25 < paso_horizontal < max_paso
-                and 25 < paso_vertical < max_paso
-            ):
-                estadisticas["geometria_descartada"] += 1
-                continue
-
-            puntos = [
-                (x0[i] - dx[i] / 2 - ex[i] / 2, y0[i] - dy[i] / 2 - ey[i] / 2),
-                (x0[i] + dx[i] / 2 - ex[i] / 2, y0[i] + dy[i] / 2 - ey[i] / 2),
-                (x0[i] + dx[i] / 2 + ex[i] / 2, y0[i] + dy[i] / 2 + ey[i] / 2),
-                (x0[i] - dx[i] / 2 + ex[i] / 2, y0[i] - dy[i] / 2 + ey[i] / 2),
-            ]
-            huella = Polygon(puntos)
-            if (
-                not huella.is_valid or huella.area < 1000
-                or huella.area > max_area
-            ):
-                estadisticas["geometria_descartada"] += 1
+            huella=reconstruir_huella(x0[i],y0[i],dx[i],dy[i],ex[i],ey[i],sensor)
+            if huella is None:
+                estadisticas['geometria_descartada']+=1
                 continue
             if not huella.intersects(rectangulo):
                 continue

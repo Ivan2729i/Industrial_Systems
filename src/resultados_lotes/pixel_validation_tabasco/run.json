@@ -1,0 +1,79 @@
+{
+  "config": {
+    "bbox": "-93.55,17.45,-92.95,18.05",
+    "date": "2024-04-19",
+    "region": "tabasco_chiapas",
+    "modis": "A2024110.0830",
+    "viirs": "A2024110.0836",
+    "resolution": "7",
+    "version": "pixel_product_validation_v1",
+    "workdir": "src\\resultados_lotes\\pixel_validation_tabasco",
+    "cache_dir": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\datos\\cache_level2",
+    "local_granules": "None"
+  },
+  "status": "COMPLETADO",
+  "products": [
+    {
+      "product": "MYD14",
+      "granule": "A2024110.0830",
+      "collection_version": "061",
+      "file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "bytes": 240031,
+      "sha256": "0f92a54a4ae73ae2c68519d2a401aeeacf78446ad7ece28c45bb334443c83407",
+      "cmr_concept_id": "G2947749982-LPCLOUD",
+      "granule_ur": "MYD14.A2024110.0830.061.2024114130436"
+    },
+    {
+      "product": "MYD03",
+      "granule": "A2024110.0830",
+      "collection_version": "061",
+      "file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+      "bytes": 30421953,
+      "sha256": "6a266936dd521c636f2cf2fc1fdd1ce45bdb0ec898e115fed2074513bdd7724a",
+      "cmr_concept_id": "G2946974120-LAADS",
+      "granule_ur": "LAADS:8168190667"
+    },
+    {
+      "product": "VNP14IMG",
+      "granule": "A2024110.0836",
+      "collection_version": "002",
+      "file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "bytes": 855643,
+      "sha256": "bc3f10fbade1fac1b33513a391db5f2178a0b9b4ff382e248d0c18f8918c6c80",
+      "cmr_concept_id": "G2946172204-LPCLOUD",
+      "granule_ur": "VNP14IMG.A2024110.0836.002.2024113210138"
+    },
+    {
+      "product": "VNP03IMG",
+      "granule": "A2024110.0836",
+      "collection_version": "002",
+      "file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+      "bytes": 152755957,
+      "sha256": "493ba09fc86089c1f5ab1159c4586a5de9619107695ad9c1bbf9998667a55983",
+      "cmr_concept_id": "G2945455976-LAADS",
+      "granule_ur": "LAADS:8166936879"
+    }
+  ],
+  "records": 819,
+  "pixel_detections": 32,
+  "pixel_product": {
+    "source_audit": {
+      "MODIS": {
+        "positive_mask_pixels_in_granule": 90,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 82,
+        "retained_in_scope": 8
+      },
+      "VIIRS": {
+        "positive_mask_pixels_in_granule": 663,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 631,
+        "retained_in_scope": 32
+      }
+    },
+    "input_positive_pixels": 40,
+    "output_members": 40,
+    "output_detections": 32
+  },
+  "output": "C:\\Users\\ivanp\\PycharmProjects\\Nasa\\src\\resultados_lotes\\pixel_validation_tabasco\\results\\observations.csv"
+}

@@ -1,0 +1,1887 @@
+{
+  "method": "L2_FOOTPRINT_ONE_TO_MANY_EXPLORATORY_V1",
+  "pixels": [
+    {
+      "id": "0e41054293a5b04562ca3b9429f9c20590b31578d573cd6b0d08c677921a0116",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 760,
+      "column": 730,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.90167808532715,
+      "longitude": -93.18771362304688,
+      "fire_class": 9,
+      "qa": {
+        "raw": 61734,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd0ffffff"
+    },
+    {
+      "id": "54bda25469c4755c56ea9a57d0babc424653c84f268aea5b0ded3b08326472c6",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 760,
+      "column": 731,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.900272369384766,
+      "longitude": -93.17841339111328,
+      "fire_class": 9,
+      "qa": {
+        "raw": 61734,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd5ffffff"
+    },
+    {
+      "id": "faabd4f749d1a8d6d1cd5040c620a40056eccf6c09cfbfc277c59982290007f6",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 761,
+      "column": 710,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.920814514160156,
+      "longitude": -93.37467956542969,
+      "fire_class": 9,
+      "qa": {
+        "raw": 2158886,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d2624cffffff"
+    },
+    {
+      "id": "80ebffd3b4354b9b6a1f92aeb82cd1abb1a419a28abaa2ce7dbe68c0ad6868fd",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 761,
+      "column": 730,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.892807006835938,
+      "longitude": -93.18916320800781,
+      "fire_class": 9,
+      "qa": {
+        "raw": 61734,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd0ffffff"
+    },
+    {
+      "id": "5134694b2f7b24f514da50c535e93e53f189e9bfa83fb4b1091afd4c3a5813d8",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 761,
+      "column": 731,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.891399383544922,
+      "longitude": -93.17986297607422,
+      "fire_class": 8,
+      "qa": {
+        "raw": 61734,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd1ffffff"
+    },
+    {
+      "id": "15d1723874ca3f716ac9319dca02de2d85d83f4e89af00508a28f10a06788fbb",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 765,
+      "column": 738,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.846010208129883,
+      "longitude": -93.12055206298828,
+      "fire_class": 9,
+      "qa": {
+        "raw": 63782,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "8b2a2ddc3a3dd99c75052a4895c35b92be92b80ba648721bde6e11553f75bc37",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 765,
+      "column": 739,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.844593048095703,
+      "longitude": -93.11123657226562,
+      "fire_class": 9,
+      "qa": {
+        "raw": 63778,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "37d0be8a3feafcb7690743856bd45462c84b93e0a199d113775c06843caa1474",
+      "sensor": "MODIS",
+      "platform": "Aqua",
+      "granule": "A2024110.0830",
+      "source_file": "MYD14.A2024110.0830.061.2024114130436.hdf",
+      "row": 768,
+      "column": 698,
+      "observed_at": "2024-04-19T08:31:54.163909+00:00",
+      "latitude": 17.87555503845215,
+      "longitude": -93.49569702148438,
+      "fire_class": 8,
+      "qa": {
+        "raw": 61734,
+        "bowtie_residual": null,
+        "geo_non_nominal": null,
+        "interpretation": "MODIS_raw_preserved_mask_class_used"
+      },
+      "provenance": {
+        "geolocation_file": "MYD03.A2024110.0830.061.2024114153427.hdf",
+        "product": "MYD14",
+        "collection_version": "061",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d262e9ffffff"
+    },
+    {
+      "id": "f2bff5764db086a91e93e40cd7ddda0e1ae31090158d6448a0ef21a885ddbc99",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3637,
+      "column": 6093,
+      "observed_at": "2024-04-19T08:39:22.881208+00:00",
+      "latitude": 18.04191017150879,
+      "longitude": -93.06554412841797,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20c0cffffff"
+    },
+    {
+      "id": "4c4b58d2d4a25d077dcc0412f088af0969354d6d9b9fd499028673019f405fb5",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3653,
+      "column": 6094,
+      "observed_at": "2024-04-19T08:39:24.660481+00:00",
+      "latitude": 18.041351318359375,
+      "longitude": -93.0662841796875,
+      "fire_class": 8,
+      "qa": {
+        "raw": 4194688,
+        "bowtie_residual": true,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20c0cffffff"
+    },
+    {
+      "id": "c67cdef20e03970a37f25f9dd7c810822a6473cb11b4de0c65c45810243efb83",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3671,
+      "column": 6028,
+      "observed_at": "2024-04-19T08:39:24.660481+00:00",
+      "latitude": 18.008636474609375,
+      "longitude": -93.45223236083984,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d26274ffffff"
+    },
+    {
+      "id": "187f81412e749c135e34d40f73f373080593f332d6368734502228fa20d670cd",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3671,
+      "column": 6029,
+      "observed_at": "2024-04-19T08:39:24.660481+00:00",
+      "latitude": 18.007429122924805,
+      "longitude": -93.44696044921875,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d26274ffffff"
+    },
+    {
+      "id": "58941434817b02f6cab26f50db4c82bbba0613f1da68b7481e03209dac88ab80",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3672,
+      "column": 6029,
+      "observed_at": "2024-04-19T08:39:24.660481+00:00",
+      "latitude": 18.00118637084961,
+      "longitude": -93.4485092163086,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d26270ffffff"
+    },
+    {
+      "id": "c71aa2d1d7634f2e8d8ab9e4d715987cb423331ae81da0f8379759c14295e0d4",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3687,
+      "column": 6029,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 18.006593704223633,
+      "longitude": -93.45342254638672,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d26274ffffff"
+    },
+    {
+      "id": "7758dc4ee7932a162e1dc91018d8f6cb49cd5d45f54c8aca02967d3f2d278b65",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3687,
+      "column": 6030,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 18.00542449951172,
+      "longitude": -93.44815063476562,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d26274ffffff"
+    },
+    {
+      "id": "237a907f1f7713c323db171c8d2d47b9abf106ed06ef37173b2d76f4d556c1f5",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3694,
+      "column": 6080,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.901079177856445,
+      "longitude": -93.19017791748047,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd0ffffff"
+    },
+    {
+      "id": "3a77589641a3e045a30a52936ce393102c790a0c30f3529692c41bc13757980a",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3694,
+      "column": 6081,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.899826049804688,
+      "longitude": -93.18463134765625,
+      "fire_class": 9,
+      "qa": {
+        "raw": 264,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd0ffffff"
+    },
+    {
+      "id": "14ea5146a55353533c9a8889def8fa48aa6285d3abdadfae042c1f92b4f7dda7",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3694,
+      "column": 6082,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.8985652923584,
+      "longitude": -93.17906951904297,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd5ffffff"
+    },
+    {
+      "id": "16e6dc1b1dd400480e94f74582989b0ad92d929f9d52488ad5150ca4bfd61118",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3695,
+      "column": 6080,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.89474868774414,
+      "longitude": -93.19184875488281,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd0ffffff"
+    },
+    {
+      "id": "327ffc03c660d77fc1892ec1a732202fc07ffa3c5c514cef76231603ff42fffc",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3695,
+      "column": 6081,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.893482208251953,
+      "longitude": -93.18624877929688,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd0ffffff"
+    },
+    {
+      "id": "f53892a6b3aa098b3cf6cfeca7f307f69d2ef523ec3066dfb6f931fc6a0f82ec",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3696,
+      "column": 6080,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.888412475585938,
+      "longitude": -93.1934814453125,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20cd0ffffff"
+    },
+    {
+      "id": "10873b4e5ed4c5401c52b9043efe1fb5635cef3b65c161b0f2b14e9ca961bb3b",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3698,
+      "column": 6046,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.917556762695312,
+      "longitude": -93.38066101074219,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d2624cffffff"
+    },
+    {
+      "id": "0f6720bf4ab4b5c4029adbb11634b74b3f7e03b2df050b8948258de1da9277b1",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3698,
+      "column": 6047,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.916345596313477,
+      "longitude": -93.37532806396484,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d2624cffffff"
+    },
+    {
+      "id": "99aa0b86fd811c92bed168f0d5147e5f816d0c85131c60e8a97dc8d81d8643f6",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3699,
+      "column": 6046,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.911279678344727,
+      "longitude": -93.3822250366211,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d2624cffffff"
+    },
+    {
+      "id": "bc9312f36b250339c8c0397821269b992d57e90d5c1604697baa051d1b5f0d70",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3699,
+      "column": 6047,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.910066604614258,
+      "longitude": -93.37689208984375,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d2624cffffff"
+    },
+    {
+      "id": "d70b6a229501ceff87d27c337f34ee35a5e2cde67a7ca54345c03ab73693007b",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3700,
+      "column": 6094,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.845346450805664,
+      "longitude": -93.12262725830078,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "bacebeb45416eabfc44314dfb1d20b386a809660e40b4599c807089115250865",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3700,
+      "column": 6095,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.844070434570312,
+      "longitude": -93.11705780029297,
+      "fire_class": 9,
+      "qa": {
+        "raw": 264,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "3fe497e0d1065f028fc7c8604c0c24f4054cb7a28797c8544f3c18ea5c018bcb",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3700,
+      "column": 6096,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.84278106689453,
+      "longitude": -93.11144256591797,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "dac5e22cbf440261820074847cbc6d8bb3702fc1cc0866cb7ccffb431200e3b6",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3701,
+      "column": 6094,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.838987350463867,
+      "longitude": -93.12430572509766,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "7f9c70d28238b220ddb5dc080b8245b51ef3218c8a99a040922f3d75c62711d0",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3701,
+      "column": 6095,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.837718963623047,
+      "longitude": -93.1187744140625,
+      "fire_class": 9,
+      "qa": {
+        "raw": 264,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "dacf5a4dfd110d9a237ee8c8ea2e9fb7f44ac5228f2e6286ac3d3dbb41cabcb6",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3701,
+      "column": 6096,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.8364200592041,
+      "longitude": -93.11312866210938,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "71ec31a343957ab10d25ac945a0a7728a4a20d7bbc3a7ad5c51335e9b043fd91",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3704,
+      "column": 6021,
+      "observed_at": "2024-04-19T08:39:26.439757+00:00",
+      "latitude": 17.910085678100586,
+      "longitude": -93.52193450927734,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d262e1ffffff"
+    },
+    {
+      "id": "6830a2732bb01e4dc797a7dfed84803731257fae854b6fe8e9f03554f6c69ec6",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3716,
+      "column": 6095,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.84471893310547,
+      "longitude": -93.1231918334961,
+      "fire_class": 8,
+      "qa": {
+        "raw": 4194688,
+        "bowtie_residual": true,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "4ba275b9e4a6258dd791c6c97413818149b7e42b419ce6602e60e91b659722d2",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3716,
+      "column": 6096,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.843477249145508,
+      "longitude": -93.11759948730469,
+      "fire_class": 9,
+      "qa": {
+        "raw": 4194568,
+        "bowtie_residual": true,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "03905d83fdad89b744cbf18bbdba5b0a9c579be7dcd5d22ff40d1dc98f50065d",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3716,
+      "column": 6097,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.84223175048828,
+      "longitude": -93.11199188232422,
+      "fire_class": 8,
+      "qa": {
+        "raw": 4194688,
+        "bowtie_residual": true,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "9019bdb71ea60d6d4cb57756af7212efabd1751ffd31683d16b56e19bb0a9bf0",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3717,
+      "column": 6096,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.837127685546875,
+      "longitude": -93.11934661865234,
+      "fire_class": 9,
+      "qa": {
+        "raw": 4194568,
+        "bowtie_residual": true,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "d6888e109dea492bad10b2da55df17b72bdbaef0ea7355b2f98b2e481aef6fd6",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3717,
+      "column": 6097,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.83587074279785,
+      "longitude": -93.11370086669922,
+      "fire_class": 8,
+      "qa": {
+        "raw": 4224256,
+        "bowtie_residual": true,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d20ccaffffff"
+    },
+    {
+      "id": "e72ec9ae2b7d472d670f31cdbe5c01340f6052ae398408b21077cd388e767bb2",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3719,
+      "column": 6022,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.91321563720703,
+      "longitude": -93.52198791503906,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d262e1ffffff"
+    },
+    {
+      "id": "a06692e99143a9f1edd0bb6b6f426b73efa65a4266bf22d233d4a7facac5c7b4",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3725,
+      "column": 6028,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.868852615356445,
+      "longitude": -93.50006103515625,
+      "fire_class": 8,
+      "qa": {
+        "raw": 384,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d262e9ffffff"
+    },
+    {
+      "id": "e97c42840501a3ce307785fb2fe75a068625dbe51f7a5bd5c2cf98d789160311",
+      "sensor": "VIIRS",
+      "platform": "Suomi NPP",
+      "granule": "A2024110.0836",
+      "source_file": "VNP14IMG.A2024110.0836.002.2024113210138.nc",
+      "row": 3725,
+      "column": 6029,
+      "observed_at": "2024-04-19T08:39:28.219030+00:00",
+      "latitude": 17.867673873901367,
+      "longitude": -93.49481201171875,
+      "fire_class": 8,
+      "qa": {
+        "raw": 29952,
+        "bowtie_residual": false,
+        "geo_non_nominal": false,
+        "interpretation": "VIIRS_bits_22_5"
+      },
+      "provenance": {
+        "geolocation_file": "VNP03IMG.A2024110.0836.002.2024113201307.nc",
+        "product": "VNP14IMG",
+        "collection_version": "002",
+        "time_basis": "scan_center_TAI93_to_UTC"
+      },
+      "h3_r7": "876d262e9ffffff"
+    }
+  ],
+  "detections": [
+    {
+      "representative": "0e41054293a5b04562ca3b9429f9c20590b31578d573cd6b0d08c677921a0116",
+      "members": [
+        "0e41054293a5b04562ca3b9429f9c20590b31578d573cd6b0d08c677921a0116",
+        "237a907f1f7713c323db171c8d2d47b9abf106ed06ef37173b2d76f4d556c1f5",
+        "3a77589641a3e045a30a52936ce393102c790a0c30f3529692c41bc13757980a"
+      ],
+      "status": "ASOCIADA",
+      "h3": "876d20cd0ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 96.78,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {
+          "237a907f1f7713c323db171c8d2d47b9abf106ed06ef37173b2d76f4d556c1f5": {
+            "overlap_viirs_fraction": 0.9156148681898363,
+            "center_distance_m": 269.4082343515031,
+            "difference_minutes": 7.5379308
+          },
+          "3a77589641a3e045a30a52936ce393102c790a0c30f3529692c41bc13757980a": {
+            "overlap_viirs_fraction": 0.7278374924239989,
+            "center_distance_m": 385.60686426018106,
+            "difference_minutes": 7.5379308
+          }
+        },
+        "reason": "spatiotemporal_footprint_association",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "15d1723874ca3f716ac9319dca02de2d85d83f4e89af00508a28f10a06788fbb",
+      "members": [
+        "15d1723874ca3f716ac9319dca02de2d85d83f4e89af00508a28f10a06788fbb",
+        "bacebeb45416eabfc44314dfb1d20b386a809660e40b4599c807089115250865",
+        "d70b6a229501ceff87d27c337f34ee35a5e2cde67a7ca54345c03ab73693007b"
+      ],
+      "status": "ASOCIADA",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {
+          "bacebeb45416eabfc44314dfb1d20b386a809660e40b4599c807089115250865": {
+            "overlap_viirs_fraction": 0.6535774917040509,
+            "center_distance_m": 428.107374817627,
+            "difference_minutes": 7.5379308
+          },
+          "d70b6a229501ceff87d27c337f34ee35a5e2cde67a7ca54345c03ab73693007b": {
+            "overlap_viirs_fraction": 0.9789175981992383,
+            "center_distance_m": 231.9072368133738,
+            "difference_minutes": 7.5379308
+          }
+        },
+        "reason": "spatiotemporal_footprint_association",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "37d0be8a3feafcb7690743856bd45462c84b93e0a199d113775c06843caa1474",
+      "members": [
+        "37d0be8a3feafcb7690743856bd45462c84b93e0a199d113775c06843caa1474"
+      ],
+      "status": "SOLO_MODIS",
+      "h3": "876d262e9ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 91.19,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "5134694b2f7b24f514da50c535e93e53f189e9bfa83fb4b1091afd4c3a5813d8",
+      "members": [
+        "5134694b2f7b24f514da50c535e93e53f189e9bfa83fb4b1091afd4c3a5813d8"
+      ],
+      "status": "SOLO_MODIS",
+      "h3": "876d20cd1ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.9,
+          "h3_class_qa": "SOLO_MODIS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "54bda25469c4755c56ea9a57d0babc424653c84f268aea5b0ded3b08326472c6",
+      "members": [
+        "54bda25469c4755c56ea9a57d0babc424653c84f268aea5b0ded3b08326472c6",
+        "14ea5146a55353533c9a8889def8fa48aa6285d3abdadfae042c1f92b4f7dda7"
+      ],
+      "status": "ASOCIADA",
+      "h3": "876d20cd5ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 95.46,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {
+          "14ea5146a55353533c9a8889def8fa48aa6285d3abdadfae042c1f92b4f7dda7": {
+            "overlap_viirs_fraction": 0.9157732280427665,
+            "center_distance_m": 201.32380390168478,
+            "difference_minutes": 7.5379308
+          }
+        },
+        "reason": "spatiotemporal_footprint_association",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "80ebffd3b4354b9b6a1f92aeb82cd1abb1a419a28abaa2ce7dbe68c0ad6868fd",
+      "members": [
+        "80ebffd3b4354b9b6a1f92aeb82cd1abb1a419a28abaa2ce7dbe68c0ad6868fd",
+        "16e6dc1b1dd400480e94f74582989b0ad92d929f9d52488ad5150ca4bfd61118",
+        "327ffc03c660d77fc1892ec1a732202fc07ffa3c5c514cef76231603ff42fffc"
+      ],
+      "status": "ASOCIADA",
+      "h3": "876d20cd0ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 96.78,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {
+          "16e6dc1b1dd400480e94f74582989b0ad92d929f9d52488ad5150ca4bfd61118": {
+            "overlap_viirs_fraction": 0.7711642393619437,
+            "center_distance_m": 356.6108517742349,
+            "difference_minutes": 7.5379308
+          },
+          "327ffc03c660d77fc1892ec1a732202fc07ffa3c5c514cef76231603ff42fffc": {
+            "overlap_viirs_fraction": 0.83993183339951,
+            "center_distance_m": 317.7511735151864,
+            "difference_minutes": 7.5379308
+          }
+        },
+        "reason": "spatiotemporal_footprint_association",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "8b2a2ddc3a3dd99c75052a4895c35b92be92b80ba648721bde6e11553f75bc37",
+      "members": [
+        "8b2a2ddc3a3dd99c75052a4895c35b92be92b80ba648721bde6e11553f75bc37",
+        "3fe497e0d1065f028fc7c8604c0c24f4054cb7a28797c8544f3c18ea5c018bcb"
+      ],
+      "status": "ASOCIADA",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {
+          "3fe497e0d1065f028fc7c8604c0c24f4054cb7a28797c8544f3c18ea5c018bcb": {
+            "overlap_viirs_fraction": 0.909009423090401,
+            "center_distance_m": 201.7324659147077,
+            "difference_minutes": 7.5379308
+          }
+        },
+        "reason": "spatiotemporal_footprint_association",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "faabd4f749d1a8d6d1cd5040c620a40056eccf6c09cfbfc277c59982290007f6",
+      "members": [
+        "faabd4f749d1a8d6d1cd5040c620a40056eccf6c09cfbfc277c59982290007f6"
+      ],
+      "status": "SOLO_MODIS",
+      "h3": "876d2624cffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_MODIS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 85.49,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "03905d83fdad89b744cbf18bbdba5b0a9c579be7dcd5d22ff40d1dc98f50065d",
+      "members": [
+        "03905d83fdad89b744cbf18bbdba5b0a9c579be7dcd5d22ff40d1dc98f50065d"
+      ],
+      "status": "SIN_COMPARABILIDAD",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "QA_geometry_or_H3_comparability_insufficient",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "0f6720bf4ab4b5c4029adbb11634b74b3f7e03b2df050b8948258de1da9277b1",
+      "members": [
+        "0f6720bf4ab4b5c4029adbb11634b74b3f7e03b2df050b8948258de1da9277b1"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d2624cffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 85.49,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "10873b4e5ed4c5401c52b9043efe1fb5635cef3b65c161b0f2b14e9ca961bb3b",
+      "members": [
+        "10873b4e5ed4c5401c52b9043efe1fb5635cef3b65c161b0f2b14e9ca961bb3b"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d2624cffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 85.49,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "187f81412e749c135e34d40f73f373080593f332d6368734502228fa20d670cd",
+      "members": [
+        "187f81412e749c135e34d40f73f373080593f332d6368734502228fa20d670cd"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d26274ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.98,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "4ba275b9e4a6258dd791c6c97413818149b7e42b419ce6602e60e91b659722d2",
+      "members": [
+        "4ba275b9e4a6258dd791c6c97413818149b7e42b419ce6602e60e91b659722d2"
+      ],
+      "status": "SIN_COMPARABILIDAD",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "QA_geometry_or_H3_comparability_insufficient",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "4c4b58d2d4a25d077dcc0412f088af0969354d6d9b9fd499028673019f405fb5",
+      "members": [
+        "4c4b58d2d4a25d077dcc0412f088af0969354d6d9b9fd499028673019f405fb5"
+      ],
+      "status": "SIN_COMPARABILIDAD",
+      "h3": "876d20c0cffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "NO_EVALUABLE",
+          "coverage_shared_pct": 77.28,
+          "h3_class_qa": "NO_EVALUABLE"
+        },
+        "associations": {},
+        "reason": "QA_geometry_or_H3_comparability_insufficient",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "58941434817b02f6cab26f50db4c82bbba0613f1da68b7481e03209dac88ab80",
+      "members": [
+        "58941434817b02f6cab26f50db4c82bbba0613f1da68b7481e03209dac88ab80"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d26270ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.98,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "6830a2732bb01e4dc797a7dfed84803731257fae854b6fe8e9f03554f6c69ec6",
+      "members": [
+        "6830a2732bb01e4dc797a7dfed84803731257fae854b6fe8e9f03554f6c69ec6"
+      ],
+      "status": "SIN_COMPARABILIDAD",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "QA_geometry_or_H3_comparability_insufficient",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "71ec31a343957ab10d25ac945a0a7728a4a20d7bbc3a7ad5c51335e9b043fd91",
+      "members": [
+        "71ec31a343957ab10d25ac945a0a7728a4a20d7bbc3a7ad5c51335e9b043fd91"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d262e1ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.99,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "7758dc4ee7932a162e1dc91018d8f6cb49cd5d45f54c8aca02967d3f2d278b65",
+      "members": [
+        "7758dc4ee7932a162e1dc91018d8f6cb49cd5d45f54c8aca02967d3f2d278b65"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d26274ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.98,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "7f9c70d28238b220ddb5dc080b8245b51ef3218c8a99a040922f3d75c62711d0",
+      "members": [
+        "7f9c70d28238b220ddb5dc080b8245b51ef3218c8a99a040922f3d75c62711d0"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "9019bdb71ea60d6d4cb57756af7212efabd1751ffd31683d16b56e19bb0a9bf0",
+      "members": [
+        "9019bdb71ea60d6d4cb57756af7212efabd1751ffd31683d16b56e19bb0a9bf0"
+      ],
+      "status": "SIN_COMPARABILIDAD",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "QA_geometry_or_H3_comparability_insufficient",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "99aa0b86fd811c92bed168f0d5147e5f816d0c85131c60e8a97dc8d81d8643f6",
+      "members": [
+        "99aa0b86fd811c92bed168f0d5147e5f816d0c85131c60e8a97dc8d81d8643f6"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d2624cffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 85.49,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "a06692e99143a9f1edd0bb6b6f426b73efa65a4266bf22d233d4a7facac5c7b4",
+      "members": [
+        "a06692e99143a9f1edd0bb6b6f426b73efa65a4266bf22d233d4a7facac5c7b4"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d262e9ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 91.19,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "bc9312f36b250339c8c0397821269b992d57e90d5c1604697baa051d1b5f0d70",
+      "members": [
+        "bc9312f36b250339c8c0397821269b992d57e90d5c1604697baa051d1b5f0d70"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d2624cffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 85.49,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "c67cdef20e03970a37f25f9dd7c810822a6473cb11b4de0c65c45810243efb83",
+      "members": [
+        "c67cdef20e03970a37f25f9dd7c810822a6473cb11b4de0c65c45810243efb83"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d26274ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.98,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "c71aa2d1d7634f2e8d8ab9e4d715987cb423331ae81da0f8379759c14295e0d4",
+      "members": [
+        "c71aa2d1d7634f2e8d8ab9e4d715987cb423331ae81da0f8379759c14295e0d4"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d26274ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.98,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "d6888e109dea492bad10b2da55df17b72bdbaef0ea7355b2f98b2e481aef6fd6",
+      "members": [
+        "d6888e109dea492bad10b2da55df17b72bdbaef0ea7355b2f98b2e481aef6fd6"
+      ],
+      "status": "SIN_COMPARABILIDAD",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "QA_geometry_or_H3_comparability_insufficient",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "dac5e22cbf440261820074847cbc6d8bb3702fc1cc0866cb7ccffb431200e3b6",
+      "members": [
+        "dac5e22cbf440261820074847cbc6d8bb3702fc1cc0866cb7ccffb431200e3b6"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "dacf5a4dfd110d9a237ee8c8ea2e9fb7f44ac5228f2e6286ac3d3dbb41cabcb6",
+      "members": [
+        "dacf5a4dfd110d9a237ee8c8ea2e9fb7f44ac5228f2e6286ac3d3dbb41cabcb6"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d20ccaffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.95,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "e72ec9ae2b7d472d670f31cdbe5c01340f6052ae398408b21077cd388e767bb2",
+      "members": [
+        "e72ec9ae2b7d472d670f31cdbe5c01340f6052ae398408b21077cd388e767bb2"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d262e1ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 99.99,
+          "h3_class_qa": "SOLO_VIIRS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "e97c42840501a3ce307785fb2fe75a068625dbe51f7a5bd5c2cf98d789160311",
+      "members": [
+        "e97c42840501a3ce307785fb2fe75a068625dbe51f7a5bd5c2cf98d789160311"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d262e9ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 91.19,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "f2bff5764db086a91e93e40cd7ddda0e1ae31090158d6448a0ef21a885ddbc99",
+      "members": [
+        "f2bff5764db086a91e93e40cd7ddda0e1ae31090158d6448a0ef21a885ddbc99"
+      ],
+      "status": "SIN_COMPARABILIDAD",
+      "h3": "876d20c0cffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "NO_EVALUABLE",
+          "coverage_shared_pct": 77.28,
+          "h3_class_qa": "NO_EVALUABLE"
+        },
+        "associations": {},
+        "reason": "QA_geometry_or_H3_comparability_insufficient",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    },
+    {
+      "representative": "f53892a6b3aa098b3cf6cfeca7f307f69d2ef523ec3066dfb6f931fc6a0f82ec",
+      "members": [
+        "f53892a6b3aa098b3cf6cfeca7f307f69d2ef523ec3066dfb6f931fc6a0f82ec"
+      ],
+      "status": "SOLO_VIIRS",
+      "h3": "876d20cd0ffffff",
+      "assessment": {
+        "exploratory": true,
+        "calibrated_sensitivity": false,
+        "representative_position": "original_VIIRS_center",
+        "footprints": "approximate_neighbor_derivatives_not_instrument_footprints",
+        "minimum_viirs_overlap_fraction": 0.5,
+        "maximum_difference_minutes": 15,
+        "h3_context": {
+          "estrato_temporal": "B_MAS_5_A_15_MIN",
+          "coverage_shared_pct": 96.78,
+          "h3_class_qa": "AMBOS"
+        },
+        "associations": {},
+        "reason": "no_assigned_compatible_positive",
+        "h3_source_version": "pixel_product_validation_v1"
+      }
+    }
+  ],
+  "conservation": {
+    "source_audit": {
+      "MODIS": {
+        "positive_mask_pixels_in_granule": 90,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 82,
+        "retained_in_scope": 8
+      },
+      "VIIRS": {
+        "positive_mask_pixels_in_granule": 663,
+        "invalid_geolocation": 0,
+        "outside_requested_bbox": 631,
+        "retained_in_scope": 32
+      }
+    },
+    "input_positive_pixels": 40,
+    "output_members": 40,
+    "output_detections": 32
+  }
+}

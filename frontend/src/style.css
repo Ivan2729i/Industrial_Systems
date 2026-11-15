@@ -87,7 +87,6 @@ footer p+p{margin-top:5px}
 .heading{margin-bottom:8px}
 .single-sensor{display:grid;gap:5px;padding:0 8px;color:var(--muted);font-size:12px}
 .single-sensor strong{font-size:14px;color:#7ed8ff}
-.method-notice{border-left:3px solid #7ed8ff;padding:12px 14px;background:#14283c;color:#b9cde2;font-size:13px;line-height:1.5;border-radius:4px;margin-bottom:14px}
 @media(max-width:600px){.top{min-height:64px}.view-tabs{margin-bottom:20px}.view-tabs button{min-height:57px;gap:7px;font-size:13px}.view-tabs .tab-letter{width:23px;height:23px}.brand img{width:45px}.brand{font-size:19px}}
 
 /* Ajustes de navegación y filtros solicitados */
@@ -182,3 +181,7 @@ footer p+p{margin-top:5px}
 .filters .geo-input-wrap input{grid-column:1;grid-row:1;min-width:0;border:0;background:transparent;padding-right:8px!important;height:36px;min-height:36px}
 .filters .geo-input-wrap .geo-clear,.filters .geo-input-wrap .geo-dropdown-toggle{position:static;transform:none;top:auto;right:auto;grid-row:1;height:26px;width:25px;padding:0;margin:0;display:flex;align-items:center;justify-content:center}
 .filters .geo-input-wrap .geo-clear{grid-column:2}.filters .geo-input-wrap .geo-dropdown-toggle{grid-column:3;border:0;background:transparent;font-size:12px}
+.map-legend{font-size:11px;color:var(--muted);padding:6px 10px;background:#101a28;border:1px solid var(--line);line-height:1.5}
+.map-credits .cesium-widget-credits{position:static;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;max-width:100%}
+.cell-detail p,.cell-detail pre{overflow-wrap:anywhere}.cell-detail pre{white-space:pre-wrap;font-size:11px}
+@media(max-width:600px){.cell-detail{position:fixed;top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:42vh;z-index:400}}

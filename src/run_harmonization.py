@@ -24,7 +24,7 @@ def main():
     if datetime.strptime(a.modis,'A%Y%j.%H%M').date()!=day:p.error('La fecha UTC se ancla en el granulo MODIS')
     if abs((datetime.strptime(a.viirs,'A%Y%j.%H%M').date()-day).days)>1:p.error('VIIRS fuera de la ventana temporal')
     work=a.workdir.resolve();work.mkdir(parents=True,exist_ok=True)
-    config={k:str(v) for k,v in vars(a).items() if k!='download_only'}
+    config={k:str(v) for k,v in vars(a).items() if k not in ('download_only',)}
     manifest=work/'run.json'
     if manifest.exists() and json.loads(manifest.read_text())['config']!=config:p.error('Directorio pertenece a otra ejecucion')
     sys.path.insert(0,str(Path(__file__).resolve().parent.parent/'backend'))
@@ -38,6 +38,7 @@ def main():
         manifest.write_text(json.dumps({'config':config,'status':status,**extra},indent=2),encoding='utf-8')
         public={k:v for k,v in config.items() if k not in ('workdir','cache_dir','local_granules')}
         run,_=HarmonizationRun.objects.get_or_create(key=key,defaults={'region':region_record,'date':day,'version':a.version,'resolution':a.resolution,'status':status})
+        if 'pixel_product' in extra:public['pixel_product']=extra['pixel_product']
         run.status=status;run.parameters=public
         if 'products' in extra:run.products=extra['products']
         if 'records' in extra:run.records=extra['records']
@@ -106,7 +107,18 @@ def main():
         call_command('import_observations',file=str(target))
         from analysis.models import OverpassPair
         OverpassPair.objects.filter(region=region_record,date=day,modis_sobrevuelo=a.modis,viirs_sobrevuelo=a.viirs).update(modis_platform='Aqua',viirs_platform='Suomi NPP')
-        state('COMPLETADO',products=provenance,records=len(frame),output=str(target))
+        from pixel_harmonization import generate
+        from analysis.pixel_product import persist_pixel_product
+        pair=OverpassPair.objects.get(region=region_record,date=day,modis_sobrevuelo=a.modis,viirs_sobrevuelo=a.viirs)
+        from analysis.models import H3Observation
+        import pandas as pd
+        pixel_context=pd.DataFrame(list(H3Observation.objects.filter(pair=pair,version_armonizacion=a.version).values('celda_h3','estrato_temporal','cobertura_compartida_pct','coincidencia_qa')))
+        pixel_payload=generate(a.local_granules or a.cache_dir,a.modis,a.viirs,region,pixel_context,a.resolution)
+        for detection in pixel_payload['detections']:detection['assessment']['h3_source_version']=a.version
+        pixel_target=out/'pixel_associations_v1.json'
+        pixel_target.write_text(json.dumps(pixel_payload,indent=2,allow_nan=False),encoding='utf-8')
+        pixel_count=persist_pixel_product(pixel_payload,pair,'pixel_assoc_v1__'+a.version)
+        state('COMPLETADO',products=provenance,records=len(frame),pixel_detections=pixel_count,pixel_product=pixel_payload['conservation'],output=str(target))
     except Exception as exc:
         # Do not expose authenticated download URLs or credentials.
         state('ERROR_PROCESAMIENTO',error_type=type(exc).__name__)

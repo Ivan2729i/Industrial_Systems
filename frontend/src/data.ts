@@ -58,3 +58,34 @@ export async function fetchCellsRange(start: string, end: string, region: string
     if (offset > 20000) throw new Error('Demasiadas observaciones: reduce el rango de fechas.')
   }
 }
+
+
+export type HarmonizedPoint={id:string;latitude:number;longitude:number;observed_at:string;status:string;version:string;method:string;h3:string;modis_count:number;viirs_count:number;product?:string;represented_count?:number;assessment:Record<string,unknown>;members:{pixel:{id:string;sensor:string;platform:string;granule:string;source_file:string;h3_r7:string;row:number;column:number;latitude:number;longitude:number;observed_at:string;fire_class:number;qa:Record<string,unknown>}}[]}
+export type OperationalPage={product:string;count:number;counts:Record<string,number>;results:HarmonizedPoint[];status:string;missing_dates:string[];mode:string;next_offset:number|null;jobs:{date:string;modis_count:number;viirs_count:number;records:number;updated_at:string}[]}
+export async function fetchOperationalPoints(start:string,end:string,bbox:string,signal:AbortSignal):Promise<OperationalPage>{
+  const params=new URLSearchParams({start,end,bbox:bbox || 'world',aggregate:String(!bbox),limit:'1000'})
+  const result=await apiGet<OperationalPage>('/v1/harmonized-detections/?'+params,signal)
+  while(result.next_offset!==null){
+    if(result.results.length>=20000)throw new Error('Reduce el área para consultar las detecciones individuales completas.')
+    params.set('offset',String(result.next_offset))
+    const next=await apiGet<OperationalPage>('/v1/harmonized-detections/?'+params,signal)
+    result.results.push(...next.results);result.next_offset=next.next_offset
+  }
+  return result
+}
+export async function fetchHarmonizedPoints(start:string,end:string,bbox:string,version:string,signal:AbortSignal):Promise<HarmonizedPoint[]> {
+  const result:HarmonizedPoint[]=[]
+  let offset=0
+  while(true){
+    const params=new URLSearchParams({start,end,limit:'1000',offset:String(offset)})
+    if(bbox)params.set('bbox',bbox)
+    if(version)params.set('version',version)
+    const page=await apiGet<{count:number;next:string|null;results:HarmonizedPoint[]}>('/v1/harmonization/detections/?'+params,signal)
+    result.push(...page.results)
+    if(!page.next)return result
+    if(!page.results.length || result.length>=20000)throw new Error('Reduce el área para cargar el producto armonizado completo.')
+    offset=result.length
+  }
+}
+
+export type PixelCatalog={dates:string[];versions:{version:string;count:number}[];processed_scopes:{date:string;bbox:number[];h3_source_version:string;positive_source_pixels:number;unified_detections:number}[];global_coverage_complete:boolean}
