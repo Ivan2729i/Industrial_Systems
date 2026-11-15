@@ -18,6 +18,7 @@ class Filters(serializers.Serializer):
     limit=serializers.IntegerField(default=1000,min_value=1,max_value=5000)
     offset=serializers.IntegerField(default=0,min_value=0,max_value=1000000)
     aggregate=serializers.BooleanField(default=False)
+    compact=serializers.BooleanField(default=False)
     country=serializers.CharField(required=False,max_length=100)
     state=serializers.CharField(required=False,max_length=100)
     city=serializers.CharField(required=False,max_length=100)
@@ -65,8 +66,13 @@ def detections(request):
         else:
             shown=qs.order_by('pk')[f['offset']:f['offset']+f['limit']]
             next_offset=f['offset']+f['limit'] if f['offset']+f['limit']<count else None
-        rows=shown.select_related('job','representative').prefetch_related('members__source')
-        return Response({'product':'FIRMS_OPERATIONAL','method':METHOD,'count':count,'counts':counts,'mode':'aggregated' if f['aggregate'] else 'individual','cell_degrees':size if f['aggregate'] else None,'results':[serialize(r,represented.get(r.pk,1)) for r in rows],'next_offset':next_offset,'jobs':[job_data(j) for j in jobs],'missing_dates':missing,'status':'PROCESAMIENTO_PENDIENTE' if missing else 'DATOS_DISPONIBLES' if count else 'SIN_DETECCIONES','note':'Integración operativa FIRMS. Asociaciones exploratorias; sin QA Level 2 ni evaluación de cobertura compartida. Las agrupaciones usan una observación original representativa; selecciona o consulta un área menor para obtener detalle.'})
+        if f['compact']:
+            rows=shown.values('id','latitude','longitude','observed_at','status','modis_count','viirs_count')
+            results=[dict(r,version=VERSION,method=METHOD,product='FIRMS_OPERATIONAL',members=[],assessment={},details_deferred=True,represented_count=represented.get(r['id'],1)) for r in rows]
+        else:
+            rows=shown.select_related('job','representative').prefetch_related('members__source')
+            results=[serialize(r,represented.get(r.pk,1)) for r in rows]
+        return Response({'product':'FIRMS_OPERATIONAL','method':METHOD,'count':count,'counts':counts,'mode':'aggregated' if f['aggregate'] else 'individual','cell_degrees':size if f['aggregate'] else None,'results':results,'next_offset':next_offset,'jobs':[job_data(j) for j in jobs],'missing_dates':missing,'status':'PROCESAMIENTO_PENDIENTE' if missing else 'DATOS_DISPONIBLES' if count else 'SIN_DETECCIONES','note':'Integración operativa FIRMS. Asociaciones exploratorias; sin QA Level 2 ni evaluación de cobertura compartida. Las agrupaciones usan una observación original representativa; selecciona o consulta un área menor para obtener detalle.'})
     except DatabaseError:return Response({'detail':'PostgreSQL no está disponible.'},status=503)
 
 @api_view(['GET'])

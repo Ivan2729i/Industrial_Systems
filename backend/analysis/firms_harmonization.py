@@ -79,7 +79,7 @@ def process_day(day, retrieve=False):
         sources = sources_for(day)
         start=datetime.combine(day,time.min,tzinfo=timezone.utc)
         # Prefer SP. The same daily product is never mixed with its NRT revision.
-        original=list(FireDetection.objects.filter(source_id__in=sources,observed_at__gte=start,observed_at__lt=start+timedelta(days=1)).select_related('source').order_by('fingerprint'))
+        original=list(FireDetection.objects.filter(is_current=True,source_id__in=sources,observed_at__gte=start,observed_at__lt=start+timedelta(days=1)).select_related('source').order_by('fingerprint'))
         # Exact observation identity across repeated source rows. Retain references to
         # all duplicate records, without counting them as distinct measurements.
         unique={}; aliases=defaultdict(list)

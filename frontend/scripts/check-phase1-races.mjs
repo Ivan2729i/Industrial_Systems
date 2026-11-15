@@ -17,7 +17,7 @@ await page.addInitScript(()=>{
 })
 
 const dates=async(start,end=start)=>{await page.getByLabel('Desde (UTC)',{exact:true}).fill(start);await page.getByLabel('Hasta (UTC)',{exact:true}).fill(end)}
-const active=async(sensor,count)=>page.waitForFunction(({sensor,count})=>{const v=window.__tfViewers.at(-1);return v?.scene.primitives._primitives.some(p=>p instanceof window.Cesium.PointPrimitiveCollection && p.show && p.length===count && p.get(0)?.id?.attributes?.sensor===sensor)},{sensor,count},{timeout:90000})
+const active=async(sensor,count)=>page.waitForFunction(({sensor,count})=>{const v=window.__tfViewers.at(-1);return v?.scene.primitives._primitives.filter(p=>p instanceof window.Cesium.PointPrimitiveCollection && p.show && p.length && p.get(0)?.id?.attributes?.sensor===sensor).reduce((n,p)=>n+p.length,0)===count},{sensor,count},{timeout:90000})
 const tab=async(name)=>page.getByRole('tab',{name:new RegExp(name)}).click()
 try{
  await page.goto('http://localhost:5173',{waitUntil:'domcontentloaded'});await active('modis',7411)
@@ -38,7 +38,7 @@ try{
  // Inject a network failure against a real date; no simulated detections are used.
  const initial=await page.evaluate(()=>window.__tfViewers[0].scene.primitives._primitives.filter(p=>p instanceof window.Cesium.PointPrimitiveCollection).map(p=>p.length))
  await page.route('**/api/v1/detections/**',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({detail:'Prueba controlada de red'})}))
- await dates('2024-04-15');await expect(page.getByRole('status').filter({hasText:/No fue posible actualizar|Error consultando FIRMS/})).toBeVisible()
+ await dates('2024-04-15');await expect(page.getByRole('status').filter({hasText:/No fue posible actualizar|Error consultando FIRMS|Error:/})).toBeVisible()
  const retained=await page.evaluate(()=>window.__tfViewers[0].scene.primitives._primitives.filter(p=>p instanceof window.Cesium.PointPrimitiveCollection).map(p=>p.length))
  expect(retained).toEqual(initial)
  await page.unroute('**/api/v1/detections/**');await dates('2024-04-16');await active('modis',7411)

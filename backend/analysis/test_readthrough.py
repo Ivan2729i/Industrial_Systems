@@ -5,7 +5,7 @@ from django.core.cache import cache
 from analysis.firms_service import ensure_day
 from analysis.nasa import NASAError
 
-class ReadThroughTests(SimpleTestCase):
+class ReadThroughTests(TestCase):
     def setUp(self): cache.clear()
 
     @patch('analysis.firms_service.DetectionImport')

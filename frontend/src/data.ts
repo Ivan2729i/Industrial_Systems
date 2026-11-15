@@ -24,7 +24,8 @@ export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> 
     const body = await response.json().catch(() => null)
     throw new Error('HTTP ' + response.status + ': ' + (body ? JSON.stringify(body) : response.statusText))
   }
-  return response.json() as Promise<T>
+  const text=await response.text(),start=performance.now();const parsed=JSON.parse(text) as T
+  performance.measure('TerraFlare:json-parse',{start,end:performance.now()});return parsed
 }
 export const fetchRegions = (signal: AbortSignal) => apiGet<Region[]>('/v1/regions/', signal)
 export const fetchDates = (region: string, signal: AbortSignal) => apiGet<{ dates: string[] }>('/v1/dates/?' + new URLSearchParams({ region }), signal)
@@ -60,10 +61,10 @@ export async function fetchCellsRange(start: string, end: string, region: string
 }
 
 
-export type HarmonizedPoint={id:string;latitude:number;longitude:number;observed_at:string;status:string;version:string;method:string;h3:string;modis_count:number;viirs_count:number;product?:string;represented_count?:number;assessment:Record<string,unknown>;members:{pixel:{id:string;sensor:string;platform:string;granule:string;source_file:string;h3_r7:string;row:number;column:number;latitude:number;longitude:number;observed_at:string;fire_class:number;qa:Record<string,unknown>}}[]}
+export type HarmonizedPoint={id:string;latitude:number;longitude:number;observed_at:string;status:string;version:string;method:string;h3:string;modis_count:number;viirs_count:number;details_deferred?:boolean;product?:string;represented_count?:number;assessment:Record<string,unknown>;members:{pixel:{id:string;sensor:string;platform:string;granule:string;source_file:string;h3_r7:string;row:number;column:number;latitude:number;longitude:number;observed_at:string;fire_class:number;qa:Record<string,unknown>}}[]}
 export type OperationalPage={product:string;count:number;counts:Record<string,number>;results:HarmonizedPoint[];status:string;missing_dates:string[];mode:string;next_offset:number|null;jobs:{date:string;modis_count:number;viirs_count:number;records:number;updated_at:string}[]}
 export async function fetchOperationalPoints(start:string,end:string,bbox:string,signal:AbortSignal):Promise<OperationalPage>{
-  const params=new URLSearchParams({start,end,bbox:bbox || 'world',aggregate:String(!bbox),limit:'1000'})
+  const params=new URLSearchParams({start,end,compact:'true',bbox:bbox || 'world',aggregate:String(!bbox),limit:'1000'})
   const result=await apiGet<OperationalPage>('/v1/harmonized-detections/?'+params,signal)
   while(result.next_offset!==null){
     if(result.results.length>=20000)throw new Error('Reduce el área para consultar las detecciones individuales completas.')

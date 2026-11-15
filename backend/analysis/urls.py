@@ -101,3 +101,5 @@ urlpatterns += [path('v1/harmonized-detections/', operational_api.detections),pa
 urlpatterns += [path('v1/harmonization/detections/', pixel_api.Detections.as_view())]
 
 urlpatterns += [path('v1/harmonization/detections/catalog/', pixel_api.catalog),path('v1/harmonization/detections/<str:pk>/', pixel_api.Detail.as_view()),path('v1/harmonization/source-pixels/', pixel_api.SourcePixels.as_view())]
+
+urlpatterns += [path('v1/detections/<int:pk>/',detections_api.detail)]
