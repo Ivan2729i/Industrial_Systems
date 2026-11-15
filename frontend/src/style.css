@@ -185,3 +185,5 @@ footer p+p{margin-top:5px}
 .map-credits .cesium-widget-credits{position:static;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;max-width:100%}
 .cell-detail p,.cell-detail pre{overflow-wrap:anywhere}.cell-detail pre{white-space:pre-wrap;font-size:11px}
 @media(max-width:600px){.cell-detail{position:fixed;top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:42vh;z-index:400}}
+
+.detection-heading{display:flex;justify-content:space-between;gap:12px}.detection-heading h3{font-size:16px;margin:0 0 12px}.detection-heading button{position:static;float:none}.detection-facts{display:grid;gap:10px}.detection-facts>div{display:grid;grid-template-columns:1fr 1.2fr;gap:12px}.detection-facts dt{font-size:12px;color:#b3c8da}.detection-facts dd{font-size:13px;margin:0}.detection-card summary{cursor:pointer;color:#9ed8ed}.detection-card details{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.detection-card pre{max-height:240px;overflow:auto}.side-menu-item:disabled{opacity:.65;cursor:default}

@@ -1,6 +1,6 @@
 from unittest.mock import patch, MagicMock
 from datetime import date
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase,TestCase
 from django.core.cache import cache
 from analysis.firms_service import ensure_day
 from analysis.nasa import NASAError
@@ -40,7 +40,7 @@ class ReadThroughTests(SimpleTestCase):
         client.assert_called_once()
 
 
-class WorldValidationTests(SimpleTestCase):
+class WorldValidationTests(TestCase):
     def test_world_large_interval_rejected_before_database(self):
         from analysis.detections_api import detections
         from rest_framework.test import APIRequestFactory

@@ -37,7 +37,9 @@ def detections(request):
     retrieval=[]
     if f['retrieve']:
         if area=='world' and (f['end_date']-f['start_date']).days>2:
-            raise ValidationError('Recuperacion mundial: maximo 3 dias; selecciona un area regional para rangos de hasta 31 dias.')
+            sources=['MODIS_SP','MODIS_NRT'] if f['sensor']=='modis' else ['VIIRS_SNPP_SP','VIIRS_SNPP_NRT']
+            cached_days=set(DetectionImport.objects.filter(source_id__in=sources,area='world',status='DATOS_DISPONIBLES',date__range=(f['start_date'],f['end_date'])).values_list('date',flat=True))
+            if len(cached_days)!=(f['end_date']-f['start_date']).days+1:raise ValidationError('La descarga mundial de fechas nuevas admite hasta 3 días; selecciona un área o reduce el intervalo.')
         from .firms_service import ensure_day
         for i in range((f['end_date']-f['start_date']).days+1):
             for part in areas: retrieval.append(ensure_day(f['sensor'], f['start_date']+timedelta(days=i), part))
@@ -54,10 +56,19 @@ def detections(request):
     if f['sensor']=='viirs': qs=qs.filter(source_id__in=['VIIRS_SNPP_SP','VIIRS_SNPP_NRT'])
     count=qs.count();offset=f['offset'];limit=f['limit']
     imported=DetectionImport.objects.filter(source__sensor=f['sensor'],date__range=(f['start_date'],f['end_date']),status='DATOS_DISPONIBLES')
-    if area!='world': imported=imported.filter(area__in=['world',area])
+    if f['sensor']=='viirs': imported=imported.filter(source_id__in=['VIIRS_SNPP_SP','VIIRS_SNPP_NRT'])
     # Coverage is reported as import provenance, never inferred from an empty point list.
     coverage=list(imported.values('source_id','date','area','records'))
-    status = 'DATOS_DISPONIBLES' if count else ('SIN_DETECCIONES' if coverage else 'DATOS_NO_IMPORTADOS')
+    def covers(stored,requested):
+        if stored=='world':return True
+        if requested=='world':return False
+        w,s,e,n=map(float,stored.split(','));a,b,c,d=map(float,requested.split(','))
+        return w<=a<=c<=e and s<=b<=d<=n
+    missing_dates=[]
+    for i in range((f['end_date']-f['start_date']).days+1):
+        day=f['start_date']+timedelta(days=i)
+        if not all(any(r['date']==day and covers(r['area'],part) for r in coverage) for part in areas):missing_dates.append(day)
+    status=('DATOS_PARCIALES' if count else 'DATOS_NO_IMPORTADOS') if missing_dates else ('DATOS_DISPONIBLES' if count else 'SIN_DETECCIONES')
     if any('ERROR' in r for r in retrieval): status='ERROR_DE_CONSULTA'
     elif any('NO_DISPONIBLES' in r for r in retrieval): status='FUERA_DE_DISPONIBILIDAD'
     elif any(r in ['REGION_DEMASIADO_GRANDE','CONSULTA_EN_CURSO'] for r in retrieval): status=retrieval[-1]
@@ -68,9 +79,9 @@ def detections(request):
             clusters=list(grouped[:2001])
             if len(clusters)<=2000:break
             size*=2
-        return Response({'status':status,'count':count,'mode':'aggregated','cell_degrees':size,'results':clusters,'retrieval':retrieval,'imports':coverage})
+        return Response({'status':status,'count':count,'mode':'aggregated','cell_degrees':size,'results':clusters,'retrieval':retrieval,'imports':coverage,'missing_dates':missing_dates})
     rows=[{'id':o.pk,'latitude':o.latitude,'longitude':o.longitude,'observed_at':o.observed_at,'satellite':o.satellite,'source':o.source_id,'original':o.original} for o in qs.order_by('pk')[offset:offset+limit]]
-    return Response({'status':status,'count':count,'results':rows,'next_offset':offset+limit if offset+limit<count else None,'retrieval':retrieval,'imports':coverage,'note':'Una lista FIRMS vacia no acredita cobertura ni ausencia de incendios.'})
+    return Response({'status':status,'count':count,'results':rows,'next_offset':offset+limit if offset+limit<count else None,'retrieval':retrieval,'imports':coverage,'missing_dates':missing_dates,'note':'Una lista FIRMS vacia no acredita cobertura ni ausencia de incendios.'})
 
 @api_view(['GET'])
 def sensors(request):
