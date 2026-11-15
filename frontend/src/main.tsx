@@ -120,14 +120,6 @@ function App() {
             <span className="menu-item-chevron">›</span>
           </button>
 
-          <button
-            type="button"
-            className="side-menu-item"
-            disabled
-          >
-            <span>Blockchain</span>
-            <small>Fase 3 · Próximamente</small>
-          </button>
         </nav>
         <div className="side-menu-footer">TerraFlare · NASA Space Apps Challenge</div>
       </aside>
